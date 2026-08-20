@@ -306,7 +306,14 @@
     word-break: break-word;
   }
 
-  .card-date {
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-date,
+  .card-author {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -319,7 +326,8 @@
     width: fit-content;
   }
 
-  .card-date.no-date {
+  .card-date.no-date,
+  .card-author.no-author {
     color: var(--text-muted);
     background: #f3f4f6;
   }
@@ -446,6 +454,11 @@
           <input type="datetime-local" id="dataInicial" name="dataInicial">
         </div>
 
+        <div class="field">
+          <label for="autor">Cadastrado por</label>
+          <input type="text" id="autor" name="autor" placeholder="Seu nome">
+        </div>
+
         <div class="field full">
           <label for="observacao">Observação</label>
           <textarea id="observacao" name="observacao" placeholder="Detalhes, contexto ou anotações sobre a pauta..."></textarea>
@@ -491,6 +504,7 @@
   const form = document.getElementById('pauta-form');
   const pautaInput = document.getElementById('pauta');
   const dataInput = document.getElementById('dataInicial');
+  const autorInput = document.getElementById('autor');
   const obsInput = document.getElementById('observacao');
   const grid = document.getElementById('cards-grid');
   const countBadge = document.getElementById('count-badge');
@@ -551,6 +565,10 @@
         ? `<span class="card-date">📅 ${formattedDate}</span>`
         : `<span class="card-date no-date">📅 Sem data definida</span>`;
 
+      const authorHtml = item.autor
+        ? `<span class="card-author">👤 ${escapeHtml(item.autor)}</span>`
+        : `<span class="card-author no-author">👤 Não informado</span>`;
+
       const obsHtml = item.observacao
         ? `<div class="card-obs">${escapeHtml(item.observacao)}</div>`
         : `<div class="card-obs empty">Sem observações.</div>`;
@@ -558,7 +576,10 @@
       return `
         <div class="card" data-id="${item.id}">
           <div class="card-title">${escapeHtml(item.pauta)}</div>
-          ${dateHtml}
+          <div class="card-meta">
+            ${dateHtml}
+            ${authorHtml}
+          </div>
           ${obsHtml}
           <div class="card-footer">
             <button class="btn-delete" data-id="${item.id}">🗑️ Excluir</button>
@@ -578,6 +599,7 @@
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       pauta,
       dataInicial: dataInput.value || null,
+      autor: autorInput.value.trim(),
       observacao: obsInput.value.trim(),
       createdAt: Date.now()
     };
