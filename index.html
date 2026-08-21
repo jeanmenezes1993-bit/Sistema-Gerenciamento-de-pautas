@@ -487,9 +487,10 @@
 
   .card-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
     padding-top: 8px;
     border-top: 1px solid var(--border);
   }
@@ -511,7 +512,7 @@
   .btn-delete { color: var(--danger); }
   .btn-delete:hover { background: var(--danger-tint); color: var(--danger-hover); }
 
-  .btn-finalize { color: var(--success); margin-right: auto; }
+  .btn-finalize { color: var(--success); }
   .btn-finalize:hover { background: var(--success-tint); color: var(--success-hover); }
 
   .btn-snooze { color: var(--warning); }
