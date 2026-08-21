@@ -272,6 +272,7 @@
 
   input[type="text"],
   input[type="datetime-local"],
+  select,
   textarea {
     font-family: inherit;
     font-size: 14px;
@@ -289,7 +290,7 @@
     min-height: 70px;
   }
 
-  input:focus, textarea:focus {
+  input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
@@ -573,6 +574,10 @@
       <button class="nav-btn" id="nav-cadastro" type="button">➕ Cadastrar Pauta</button>
       <button class="nav-btn active" id="nav-pendentes" type="button">🗒️ Pautas</button>
       <button class="nav-btn" id="nav-finalizados" type="button">✅ Finalizados</button>
+      <div class="nav-section-label" style="margin-top:6px;">Pessoas</div>
+      <button class="nav-btn" id="nav-pessoa-solange" type="button" data-pessoa="Solange Vilarino">👤 Solange Vilarino</button>
+      <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão">👤 Felipe Galvão</button>
+      <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes">👤 Jean Menezes</button>
     </nav>
     <div class="sidebar-footer">Sistema de uso interno</div>
   </aside>
@@ -607,7 +612,12 @@
 
           <div class="field">
             <label for="destinatario">Direcionado para</label>
-            <input type="text" id="destinatario" name="destinatario" placeholder="Nome ou setor">
+            <select id="destinatario" name="destinatario">
+              <option value="">Selecione um responsável</option>
+              <option value="Solange Vilarino">Solange Vilarino</option>
+              <option value="Felipe Galvão">Felipe Galvão</option>
+              <option value="Jean Menezes">Jean Menezes</option>
+            </select>
           </div>
         </div>
 
@@ -651,48 +661,35 @@
 
   sidebarOverlay.addEventListener('click', closeSidebar);
 
-  const navCadastro = document.getElementById('nav-cadastro');
-  const navPendentes = document.getElementById('nav-pendentes');
-  const navFinalizados = document.getElementById('nav-finalizados');
+  const navButtons = Array.from(document.querySelectorAll('.nav-section .nav-btn'));
   const formSection = document.getElementById('form-section');
   const cardsSection = document.getElementById('cards-section');
   const sectionTitleText = document.getElementById('section-title-text');
 
-  const SCREENS = {
-    cadastro: {
-      showForm: true,
-      showCards: false
-    },
-    pendentes: {
-      sectionTitle: 'Pautas Cadastradas',
-      showForm: false,
-      showCards: true
-    },
-    finalizados: {
-      sectionTitle: 'Pautas Finalizadas',
-      showForm: false,
-      showCards: true
-    }
-  };
+  let currentScreen = 'nav-pendentes';
 
-  let currentScreen = 'pendentes';
+  function currentPessoaFiltro() {
+    const btn = document.getElementById(currentScreen);
+    return btn ? btn.dataset.pessoa || null : null;
+  }
 
   function showScreen(screen) {
     currentScreen = screen;
-    const config = SCREENS[screen];
-    navCadastro.classList.toggle('active', screen === 'cadastro');
-    navPendentes.classList.toggle('active', screen === 'pendentes');
-    navFinalizados.classList.toggle('active', screen === 'finalizados');
-    formSection.style.display = config.showForm ? '' : 'none';
-    cardsSection.style.display = config.showCards ? '' : 'none';
-    if (config.sectionTitle) sectionTitleText.textContent = config.sectionTitle;
+    navButtons.forEach(btn => btn.classList.toggle('active', btn.id === screen));
+
+    const pessoa = currentPessoaFiltro();
+    formSection.style.display = screen === 'nav-cadastro' ? '' : 'none';
+    cardsSection.style.display = screen === 'nav-cadastro' ? 'none' : '';
+
+    if (screen === 'nav-pendentes') sectionTitleText.textContent = 'Pautas Cadastradas';
+    else if (screen === 'nav-finalizados') sectionTitleText.textContent = 'Pautas Finalizadas';
+    else if (pessoa) sectionTitleText.textContent = `Pautas de ${pessoa}`;
+
     closeSidebar();
     render();
   }
 
-  navCadastro.addEventListener('click', () => showScreen('cadastro'));
-  navPendentes.addEventListener('click', () => showScreen('pendentes'));
-  navFinalizados.addEventListener('click', () => showScreen('finalizados'));
+  navButtons.forEach(btn => btn.addEventListener('click', () => showScreen(btn.id)));
 
   const THEME_KEY = 'pautas_theme';
   const themeToggle = document.getElementById('theme-toggle');
@@ -786,31 +783,42 @@
 
   function render() {
     const pautas = loadPautas();
-    const visible = pautas.filter(item =>
-      currentScreen === 'finalizados' ? item.status === 'finalizada' : item.status !== 'finalizada'
-    );
+    const pessoa = currentPessoaFiltro();
+
+    const visible = pautas.filter(item => {
+      if (currentScreen === 'nav-finalizados') return item.status === 'finalizada';
+      if (currentScreen === 'nav-pendentes') return item.status !== 'finalizada';
+      if (pessoa) return item.destinatario === pessoa;
+      return false;
+    });
     countBadge.textContent = visible.length;
 
     if (visible.length === 0) {
-      grid.innerHTML = currentScreen === 'finalizados'
-        ? `
-          <div class="empty-state">
-            <div class="icon">✅</div>
-            <h3>Nenhuma pauta finalizada ainda</h3>
-            <p>As pautas concluídas aparecem aqui quando você clicar em "Finalizar".</p>
-          </div>
-        `
-        : `
-          <div class="empty-state">
-            <div class="icon">📋</div>
-            <h3>Nenhuma pauta cadastrada</h3>
-            <p>Clique em "Cadastrar Pauta" no menu para começar.</p>
-          </div>
-        `;
+      let icon = '📋';
+      let title = 'Nenhuma pauta cadastrada';
+      let text = 'Clique em "Cadastrar Pauta" no menu para começar.';
+
+      if (currentScreen === 'nav-finalizados') {
+        icon = '✅';
+        title = 'Nenhuma pauta finalizada ainda';
+        text = 'As pautas concluídas aparecem aqui quando você clicar em "Finalizar".';
+      } else if (pessoa) {
+        icon = '📥';
+        title = `Nenhuma pauta direcionada a ${pessoa}`;
+        text = 'As pautas com esse direcionamento aparecem aqui.';
+      }
+
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">${icon}</div>
+          <h3>${title}</h3>
+          <p>${text}</p>
+        </div>
+      `;
       return;
     }
 
-    const sorted = currentScreen === 'finalizados'
+    const sorted = currentScreen === 'nav-finalizados'
       ? [...visible].sort((a, b) => (b.finalizadoAt || 0) - (a.finalizadoAt || 0))
       : [...visible].sort((a, b) => b.createdAt - a.createdAt);
 
@@ -892,7 +900,7 @@
     savePautas(pautas);
 
     form.reset();
-    showScreen('pendentes');
+    showScreen('nav-pendentes');
   });
 
   grid.addEventListener('click', (e) => {
@@ -945,7 +953,7 @@
     }
   });
 
-  showScreen('pendentes');
+  showScreen('nav-pendentes');
   setInterval(render, 5 * 60 * 1000);
 </script>
 
