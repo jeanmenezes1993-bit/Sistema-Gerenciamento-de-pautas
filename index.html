@@ -186,6 +186,13 @@
     grid-column: 1 / -1;
   }
 
+  .field-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 20px;
+  }
+
   .field label {
     font-size: 13px;
     font-weight: 600;
@@ -313,7 +320,8 @@
   }
 
   .card-date,
-  .card-author {
+  .card-author,
+  .card-target {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -327,7 +335,8 @@
   }
 
   .card-date.no-date,
-  .card-author.no-author {
+  .card-author.no-author,
+  .card-target.no-target {
     color: var(--text-muted);
     background: #f3f4f6;
   }
@@ -400,6 +409,7 @@
 
   @media (max-width: 620px) {
     .form-grid { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
     .container { padding: 20px 16px 48px; }
   }
 
@@ -449,14 +459,21 @@
           <input type="text" id="pauta" name="pauta" placeholder="Título da pauta" required>
         </div>
 
-        <div class="field">
-          <label for="dataInicial">Data Inicial</label>
-          <input type="datetime-local" id="dataInicial" name="dataInicial">
-        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="dataInicial">Data Inicial</label>
+            <input type="datetime-local" id="dataInicial" name="dataInicial">
+          </div>
 
-        <div class="field">
-          <label for="autor">Cadastrado por</label>
-          <input type="text" id="autor" name="autor" placeholder="Seu nome">
+          <div class="field">
+            <label for="autor">Cadastrado por</label>
+            <input type="text" id="autor" name="autor" placeholder="Seu nome">
+          </div>
+
+          <div class="field">
+            <label for="destinatario">Direcionado para</label>
+            <input type="text" id="destinatario" name="destinatario" placeholder="Nome ou setor">
+          </div>
         </div>
 
         <div class="field full">
@@ -505,6 +522,7 @@
   const pautaInput = document.getElementById('pauta');
   const dataInput = document.getElementById('dataInicial');
   const autorInput = document.getElementById('autor');
+  const destinatarioInput = document.getElementById('destinatario');
   const obsInput = document.getElementById('observacao');
   const grid = document.getElementById('cards-grid');
   const countBadge = document.getElementById('count-badge');
@@ -569,6 +587,10 @@
         ? `<span class="card-author">👤 ${escapeHtml(item.autor)}</span>`
         : `<span class="card-author no-author">👤 Não informado</span>`;
 
+      const targetHtml = item.destinatario
+        ? `<span class="card-target">🎯 Para: ${escapeHtml(item.destinatario)}</span>`
+        : `<span class="card-target no-target">🎯 Sem direcionamento</span>`;
+
       const obsHtml = item.observacao
         ? `<div class="card-obs">${escapeHtml(item.observacao)}</div>`
         : `<div class="card-obs empty">Sem observações.</div>`;
@@ -579,6 +601,7 @@
           <div class="card-meta">
             ${dateHtml}
             ${authorHtml}
+            ${targetHtml}
           </div>
           ${obsHtml}
           <div class="card-footer">
@@ -600,6 +623,7 @@
       pauta,
       dataInicial: dataInput.value || null,
       autor: autorInput.value.trim(),
+      destinatario: destinatarioInput.value.trim(),
       observacao: obsInput.value.trim(),
       createdAt: Date.now()
     };
