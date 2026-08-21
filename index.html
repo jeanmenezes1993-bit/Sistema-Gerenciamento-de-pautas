@@ -17,59 +17,59 @@
 </script>
 <style>
   :root {
-    --bg: #f4f6fb;
-    --surface: #ffffff;
-    --border: #e5e9f2;
-    --text: #1f2937;
-    --text-muted: #6b7280;
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --danger: #ef4444;
-    --danger-hover: #dc2626;
-    --shadow: 0 4px 14px rgba(31, 41, 55, 0.06);
-    --shadow-hover: 0 10px 24px rgba(31, 41, 55, 0.10);
+    --bg: #F7F5F2;
+    --surface: #FFFFFF;
+    --border: #E8E4DD;
+    --text: #33312C;
+    --text-muted: #8A8577;
+    --primary: #0E9488;
+    --primary-hover: #0B776D;
+    --danger: #D6534A;
+    --danger-hover: #B5382F;
+    --shadow: 0 4px 14px rgba(51, 49, 44, 0.06);
+    --shadow-hover: 0 10px 24px rgba(51, 49, 44, 0.10);
     --radius: 14px;
     --sidebar-w: 195px;
-    --sidebar-bg: #1A2332;
+    --sidebar-bg: #22221D;
     --sidebar-hover: rgba(255,255,255,0.07);
-    --sidebar-active: rgba(29,158,117,0.20);
+    --sidebar-active: rgba(45,212,182,0.20);
     --sidebar-text: rgba(255,255,255,0.55);
-    --tint: #eef2ff;
+    --tint: #E3F4F1;
     --tint-text: var(--primary);
-    --tint-neutral: #f3f4f6;
-    --input-bg: #fbfcfe;
-    --danger-tint: #fef2f2;
-    --success: #16a34a;
-    --success-hover: #15803d;
-    --success-tint: #f0fdf4;
-    --warning: #d97706;
-    --warning-hover: #b45309;
-    --warning-tint: #fffbeb;
+    --tint-neutral: #F1EEE8;
+    --input-bg: #FCFBF9;
+    --danger-tint: #FBECEA;
+    --success: #3F9142;
+    --success-hover: #2F7233;
+    --success-tint: #EBF5EA;
+    --warning: #B7791F;
+    --warning-hover: #8F5D14;
+    --warning-tint: #FAF1DF;
   }
 
   :root[data-theme="dark"] {
-    --bg: #10141f;
-    --surface: #181f30;
-    --border: rgba(255,255,255,0.08);
-    --text: #e5e7eb;
-    --text-muted: #97a1b5;
-    --primary: #6366f1;
-    --primary-hover: #7c7ff0;
-    --danger: #f87171;
-    --danger-hover: #fca5a5;
+    --bg: #1A1917;
+    --surface: #232220;
+    --border: rgba(255,250,240,0.09);
+    --text: #E9E6DF;
+    --text-muted: #9C978A;
+    --primary: #2DD4BF;
+    --primary-hover: #5EEAD4;
+    --danger: #E8897E;
+    --danger-hover: #F3AFA6;
     --shadow: 0 4px 14px rgba(0,0,0,0.35);
     --shadow-hover: 0 10px 24px rgba(0,0,0,0.45);
-    --tint: rgba(99,102,241,0.16);
-    --tint-text: #a5b4fc;
-    --tint-neutral: rgba(255,255,255,0.06);
-    --input-bg: #10141f;
-    --danger-tint: rgba(248,113,113,0.14);
-    --success: #4ade80;
-    --success-hover: #86efac;
-    --success-tint: rgba(74,222,128,0.14);
-    --warning: #fbbf24;
-    --warning-hover: #fcd34d;
-    --warning-tint: rgba(251,191,36,0.14);
+    --tint: rgba(45,212,191,0.16);
+    --tint-text: #7DEEDD;
+    --tint-neutral: rgba(255,250,240,0.06);
+    --input-bg: #1A1917;
+    --danger-tint: rgba(232,137,126,0.14);
+    --success: #6FCB72;
+    --success-hover: #9BDF9C;
+    --success-tint: rgba(111,203,114,0.14);
+    --warning: #E5B75B;
+    --warning-hover: #F0CC85;
+    --warning-tint: rgba(229,183,91,0.14);
   }
 
   * { box-sizing: border-box; }
@@ -112,7 +112,7 @@
   .sidebar-logo {
     width: 34px;
     height: 34px;
-    background: #1D9E75;
+    background: #0E9488;
     border-radius: 9px;
     display: flex;
     align-items: center;
@@ -147,7 +147,7 @@
   }
 
   .nav-btn:hover { background: var(--sidebar-hover); color: rgba(255,255,255,.85); }
-  .nav-btn.active { background: var(--sidebar-active); color: #5DCAA5; font-weight: 500; }
+  .nav-btn.active { background: var(--sidebar-active); color: #5EEAD4; font-weight: 500; }
 
   .sidebar-footer {
     padding: 12px 16px;
@@ -320,7 +320,7 @@
   input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    box-shadow: 0 0 0 3px rgba(14, 148, 136, 0.14);
     background: var(--surface);
   }
 
