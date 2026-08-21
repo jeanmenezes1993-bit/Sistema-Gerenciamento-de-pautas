@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerenciador de Pautas</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234F46E5'/%3E%3Crect x='16' y='14' width='26' height='34' rx='4' fill='%233730A5'/%3E%3Crect x='22' y='20' width='26' height='34' rx='4' fill='%23FFFFFF'/%3E%3Cline x1='27' y1='29' x2='43' y2='29' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='36' x2='43' y2='36' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='43' x2='37' y2='43' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<script>
+  (function () {
+    var saved = localStorage.getItem('pautas_theme');
+    var theme = (saved === 'light' || saved === 'dark')
+      ? saved
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <style>
   :root {
     --bg: #f4f6fb;
@@ -24,9 +33,36 @@
     --sidebar-hover: rgba(255,255,255,0.07);
     --sidebar-active: rgba(29,158,117,0.20);
     --sidebar-text: rgba(255,255,255,0.55);
+    --tint: #eef2ff;
+    --tint-text: var(--primary);
+    --tint-neutral: #f3f4f6;
+    --input-bg: #fbfcfe;
+    --danger-tint: #fef2f2;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #10141f;
+    --surface: #181f30;
+    --border: rgba(255,255,255,0.08);
+    --text: #e5e7eb;
+    --text-muted: #97a1b5;
+    --primary: #6366f1;
+    --primary-hover: #7c7ff0;
+    --danger: #f87171;
+    --danger-hover: #fca5a5;
+    --shadow: 0 4px 14px rgba(0,0,0,0.35);
+    --shadow-hover: 0 10px 24px rgba(0,0,0,0.45);
+    --tint: rgba(99,102,241,0.16);
+    --tint-text: #a5b4fc;
+    --tint-neutral: rgba(255,255,255,0.06);
+    --input-bg: #10141f;
+    --danger-tint: rgba(248,113,113,0.14);
   }
 
   * { box-sizing: border-box; }
+
+  html { color-scheme: light; }
+  html[data-theme="dark"] { color-scheme: dark; }
 
   body {
     margin: 0;
@@ -144,6 +180,11 @@
 
   header.page-header {
     margin-bottom: 28px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
   header.page-header h1 {
@@ -159,6 +200,26 @@
     margin: 0;
     color: var(--text-muted);
     font-size: 14px;
+  }
+
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    transition: background .15s ease, border-color .15s ease;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--primary);
   }
 
   .form-card {
@@ -211,7 +272,7 @@
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    background: #fbfcfe;
+    background: var(--input-bg);
     color: var(--text);
     transition: border-color .15s ease, box-shadow .15s ease;
     width: 100%;
@@ -226,7 +287,7 @@
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
-    background: #fff;
+    background: var(--surface);
   }
 
   .form-actions {
@@ -270,8 +331,8 @@
   .count-badge {
     font-size: 12px;
     font-weight: 600;
-    background: #eef2ff;
-    color: var(--primary);
+    background: var(--tint);
+    color: var(--tint-text);
     padding: 3px 10px;
     border-radius: 999px;
   }
@@ -327,8 +388,8 @@
     gap: 6px;
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--primary);
-    background: #eef2ff;
+    color: var(--tint-text);
+    background: var(--tint);
     padding: 5px 10px;
     border-radius: 8px;
     width: fit-content;
@@ -338,7 +399,7 @@
   .card-author.no-author,
   .card-target.no-target {
     color: var(--text-muted);
-    background: #f3f4f6;
+    background: var(--tint-neutral);
   }
 
   .card-obs {
@@ -376,7 +437,7 @@
   }
 
   .btn-delete:hover {
-    background: #fef2f2;
+    background: var(--danger-tint);
     color: var(--danger-hover);
   }
 
@@ -447,8 +508,11 @@
   <main class="main">
 <div class="container">
   <header class="page-header">
-    <h1>🗂️ Gerenciador de Pautas</h1>
-    <p>Organize suas pautas em cards, com data e observações.</p>
+    <div>
+      <h1>🗂️ Gerenciador de Pautas</h1>
+      <p>Organize suas pautas em cards, com data e observações.</p>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button"></button>
   </header>
 
   <section class="form-card">
@@ -515,6 +579,26 @@
   });
 
   sidebarOverlay.addEventListener('click', closeSidebar);
+
+  const THEME_KEY = 'pautas_theme';
+  const themeToggle = document.getElementById('theme-toggle');
+
+  function getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function updateThemeToggleLabel(theme) {
+    themeToggle.textContent = theme === 'dark' ? '☀️ Tema Claro' : '🌙 Tema Escuro';
+  }
+
+  updateThemeToggleLabel(getCurrentTheme());
+
+  themeToggle.addEventListener('click', () => {
+    const next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem(THEME_KEY, next);
+    updateThemeToggleLabel(next);
+  });
 
   const STORAGE_KEY = 'pautas_cards_v1';
 
