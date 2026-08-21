@@ -414,6 +414,20 @@
     .card.overdue { animation: none; box-shadow: 0 0 0 2px var(--danger); }
   }
 
+  @keyframes card-blink-green {
+    0%, 100% { box-shadow: 0 0 0 2px var(--success); }
+    50% { box-shadow: 0 0 0 2px transparent; }
+  }
+
+  .card.just-added {
+    border-color: var(--success);
+    animation: card-blink-green 1s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card.just-added { animation: none; box-shadow: 0 0 0 2px var(--success); }
+  }
+
   .card-title {
     font-size: 17px;
     font-weight: 700;
@@ -760,6 +774,7 @@
   const countBadge = document.getElementById('count-badge');
 
   let pautasCache = [];
+  let recentlyAddedId = null;
 
   function getSelectedDestinatarios() {
     return Array.from(destinatariosGroup.querySelectorAll('input:checked')).map(el => el.value);
@@ -903,6 +918,7 @@
         : `<span class="card-target no-target">🎯 Sem direcionamento</span>`;
 
       const overdue = isOverdue(item);
+      const justAdded = item.id === recentlyAddedId;
       const overdueHtml = overdue
         ? `<span class="card-overdue-badge">⚠️ Em atraso (${businessDaysSince(overdueReference(item))} dias úteis)</span>`
         : '';
@@ -922,7 +938,7 @@
         : '';
 
       return `
-        <div class="card${overdue ? ' overdue' : ''}" data-id="${item.id}">
+        <div class="card${overdue ? ' overdue' : ''}${justAdded ? ' just-added' : ''}" data-id="${item.id}">
           <div class="card-title">${escapeHtml(item.pauta)}</div>
           <div class="card-meta">
             ${dateHtml}
@@ -951,14 +967,14 @@
     const submitBtn = form.querySelector('.btn-primary');
     submitBtn.disabled = true;
 
-    const { error } = await supabaseClient.from('pautas').insert({
+    const { data, error } = await supabaseClient.from('pautas').insert({
       pauta,
       data_inicial: dataInput.value || null,
       autor: autorInput.value.trim(),
       destinatarios: getSelectedDestinatarios(),
       observacao: obsInput.value.trim(),
       status: 'pendente'
-    });
+    }).select().single();
 
     submitBtn.disabled = false;
 
@@ -967,6 +983,12 @@
       alert('Não foi possível cadastrar a pauta. Verifique sua conexão e tente novamente.');
       return;
     }
+
+    recentlyAddedId = data.id;
+    setTimeout(() => {
+      recentlyAddedId = null;
+      render();
+    }, 3000);
 
     form.reset();
     await fetchPautas();
