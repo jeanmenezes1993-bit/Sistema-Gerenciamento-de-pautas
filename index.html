@@ -660,6 +660,64 @@
     text-align: center;
   }
 
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-hover);
+    padding: 24px;
+  }
+
+  .modal-card h3 {
+    margin: 0 0 4px;
+    font-size: 17px;
+  }
+
+  .modal-card > p {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .modal-card textarea {
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 8px;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .btn-secondary {
+    background: var(--tint-neutral);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 10px;
+  }
+
+  .btn-secondary:hover { background: var(--border); }
+
   .logout-btn {
     display: flex;
     align-items: center;
@@ -803,6 +861,19 @@
   </section>
 </div>
   </main>
+</div>
+
+<div class="modal-overlay" id="snooze-overlay">
+  <form class="modal-card" id="snooze-form">
+    <h3>Justificar adiamento</h3>
+    <p>Explique o motivo para adiar esta pauta. O texto será adicionado à observação do card.</p>
+    <textarea id="snooze-justification" placeholder="Por que está adiando esta pauta?"></textarea>
+    <div class="login-error" id="snooze-error" style="display:none;">Escreva uma justificativa antes de continuar.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" id="snooze-cancel">Cancelar</button>
+      <button type="submit" class="btn-primary">Confirmar adiamento</button>
+    </div>
+  </form>
 </div>
 
 <script>
@@ -1124,13 +1195,7 @@
 
     const snoozeBtn = e.target.closest('.btn-snooze');
     if (snoozeBtn) {
-      const id = snoozeBtn.dataset.id;
-      const { error } = await supabaseClient
-        .from('pautas')
-        .update({ postponed_at: new Date().toISOString() })
-        .eq('id', id);
-      if (error) { console.error('Erro ao adiar pauta', error); return; }
-      await fetchPautas();
+      openSnoozeModal(snoozeBtn.dataset.id);
     }
   });
 
@@ -1149,6 +1214,59 @@
       .eq('id', id);
     if (error) console.error('Erro ao salvar observação', error);
     else item.observacao = novoValor;
+  });
+
+  let snoozeTargetId = null;
+  const snoozeOverlay = document.getElementById('snooze-overlay');
+  const snoozeForm = document.getElementById('snooze-form');
+  const snoozeJustification = document.getElementById('snooze-justification');
+  const snoozeError = document.getElementById('snooze-error');
+  const snoozeCancelBtn = document.getElementById('snooze-cancel');
+
+  function openSnoozeModal(id) {
+    snoozeTargetId = id;
+    snoozeJustification.value = '';
+    snoozeError.style.display = 'none';
+    snoozeOverlay.classList.add('open');
+    snoozeJustification.focus();
+  }
+
+  function closeSnoozeModal() {
+    snoozeOverlay.classList.remove('open');
+    snoozeTargetId = null;
+  }
+
+  snoozeCancelBtn.addEventListener('click', closeSnoozeModal);
+  snoozeOverlay.addEventListener('click', (e) => {
+    if (e.target === snoozeOverlay) closeSnoozeModal();
+  });
+
+  snoozeForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const justificativa = snoozeJustification.value.trim();
+    if (!justificativa) {
+      snoozeError.style.display = 'block';
+      return;
+    }
+
+    const item = pautasCache.find(p => p.id === snoozeTargetId);
+    if (!item) { closeSnoozeModal(); return; }
+
+    const nota = `[Adiado em ${formatDate(new Date().toISOString())}] ${justificativa}`;
+    const novaObservacao = item.observacao ? `${item.observacao}\n\n${nota}` : nota;
+
+    const { error } = await supabaseClient
+      .from('pautas')
+      .update({ postponed_at: new Date().toISOString(), observacao: novaObservacao })
+      .eq('id', snoozeTargetId);
+
+    if (error) {
+      console.error('Erro ao adiar pauta', error);
+      return;
+    }
+
+    closeSnoozeModal();
+    await fetchPautas();
   });
 
   let appInitialized = false;
