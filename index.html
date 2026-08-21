@@ -871,14 +871,14 @@
       } else if (pessoa) {
         icon = '📥';
         title = `Nenhuma pauta direcionada a ${pessoa}`;
-        text = 'As pautas com esse direcionamento aparecem aqui.';
+        text = '';
       }
 
       grid.innerHTML = `
         <div class="empty-state">
           <div class="icon">${icon}</div>
           <h3>${title}</h3>
-          <p>${text}</p>
+          ${text ? `<p>${text}</p>` : ''}
         </div>
       `;
       return;
