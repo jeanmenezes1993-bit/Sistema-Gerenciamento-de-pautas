@@ -839,7 +839,7 @@
         ? `<button class="btn-finalize" data-id="${item.id}">✅ Finalizar</button>`
         : '';
 
-      const snoozeBtnHtml = overdue
+      const snoozeBtnHtml = item.status !== 'finalizada'
         ? `<button class="btn-snooze" data-id="${item.id}">⏰ Adiar 3 dias</button>`
         : '';
 
