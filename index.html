@@ -576,6 +576,7 @@
     </div>
     <nav class="nav-section">
       <div class="nav-section-label">Principal</div>
+      <button class="nav-btn" id="nav-cadastro" type="button">➕ Cadastrar Pauta</button>
       <button class="nav-btn active" id="nav-pendentes" type="button">🗒️ Pautas</button>
       <button class="nav-btn" id="nav-finalizados" type="button">✅ Finalizados</button>
     </nav>
@@ -629,7 +630,7 @@
     </form>
   </section>
 
-  <section>
+  <section id="cards-section">
     <h2 class="section-title">
       <span id="section-title-text">Pautas Cadastradas</span>
       <span class="count-badge" id="count-badge">0</span>
@@ -657,20 +658,31 @@
 
   sidebarOverlay.addEventListener('click', closeSidebar);
 
+  const navCadastro = document.getElementById('nav-cadastro');
   const navPendentes = document.getElementById('nav-pendentes');
   const navFinalizados = document.getElementById('nav-finalizados');
   const formSection = document.getElementById('form-section');
+  const cardsSection = document.getElementById('cards-section');
   const pageSubtitle = document.getElementById('page-subtitle');
   const sectionTitleText = document.getElementById('section-title-text');
 
   const SCREENS = {
+    cadastro: {
+      subtitle: 'Preencha os dados para cadastrar uma nova pauta.',
+      showForm: true,
+      showCards: false
+    },
     pendentes: {
       subtitle: 'Organize suas pautas em cards, com data e observações.',
-      sectionTitle: 'Pautas Cadastradas'
+      sectionTitle: 'Pautas Cadastradas',
+      showForm: false,
+      showCards: true
     },
     finalizados: {
       subtitle: 'Registro das pautas já concluídas.',
-      sectionTitle: 'Pautas Finalizadas'
+      sectionTitle: 'Pautas Finalizadas',
+      showForm: false,
+      showCards: true
     }
   };
 
@@ -678,15 +690,19 @@
 
   function showScreen(screen) {
     currentScreen = screen;
+    const config = SCREENS[screen];
+    navCadastro.classList.toggle('active', screen === 'cadastro');
     navPendentes.classList.toggle('active', screen === 'pendentes');
     navFinalizados.classList.toggle('active', screen === 'finalizados');
-    formSection.style.display = screen === 'pendentes' ? '' : 'none';
-    pageSubtitle.textContent = SCREENS[screen].subtitle;
-    sectionTitleText.textContent = SCREENS[screen].sectionTitle;
+    formSection.style.display = config.showForm ? '' : 'none';
+    cardsSection.style.display = config.showCards ? '' : 'none';
+    pageSubtitle.textContent = config.subtitle;
+    if (config.sectionTitle) sectionTitleText.textContent = config.sectionTitle;
     closeSidebar();
     render();
   }
 
+  navCadastro.addEventListener('click', () => showScreen('cadastro'));
   navPendentes.addEventListener('click', () => showScreen('pendentes'));
   navFinalizados.addEventListener('click', () => showScreen('finalizados'));
 
@@ -800,7 +816,7 @@
           <div class="empty-state">
             <div class="icon">📋</div>
             <h3>Nenhuma pauta cadastrada</h3>
-            <p>Adicione uma pauta usando o formulário acima para começar.</p>
+            <p>Clique em "Cadastrar Pauta" no menu para começar.</p>
           </div>
         `;
       return;
@@ -888,8 +904,7 @@
     savePautas(pautas);
 
     form.reset();
-    pautaInput.focus();
-    render();
+    showScreen('pendentes');
   });
 
   grid.addEventListener('click', (e) => {
@@ -942,7 +957,7 @@
     }
   });
 
-  render();
+  showScreen('pendentes');
   setInterval(render, 5 * 60 * 1000);
 </script>
 
