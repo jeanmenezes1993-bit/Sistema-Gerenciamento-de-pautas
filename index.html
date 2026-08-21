@@ -486,11 +486,10 @@
   }
 
   .card-footer {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
     padding-top: 8px;
     border-top: 1px solid var(--border);
   }
@@ -509,14 +508,14 @@
     transition: background .15s ease, color .15s ease;
   }
 
-  .btn-delete { color: var(--danger); }
-  .btn-delete:hover { background: var(--danger-tint); color: var(--danger-hover); }
-
-  .btn-finalize { color: var(--success); }
+  .btn-finalize { grid-column: 1; justify-self: start; color: var(--success); }
   .btn-finalize:hover { background: var(--success-tint); color: var(--success-hover); }
 
-  .btn-snooze { color: var(--warning); }
+  .btn-snooze { grid-column: 2; justify-self: center; color: var(--warning); }
   .btn-snooze:hover { background: var(--warning-tint); color: var(--warning-hover); }
+
+  .btn-delete { grid-column: 3; justify-self: end; color: var(--danger); }
+  .btn-delete:hover { background: var(--danger-tint); color: var(--danger-hover); }
 
   .empty-state {
     grid-column: 1 / -1;
