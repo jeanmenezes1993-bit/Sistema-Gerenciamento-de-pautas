@@ -41,6 +41,9 @@
     --success: #16a34a;
     --success-hover: #15803d;
     --success-tint: #f0fdf4;
+    --warning: #d97706;
+    --warning-hover: #b45309;
+    --warning-tint: #fffbeb;
   }
 
   :root[data-theme="dark"] {
@@ -63,6 +66,9 @@
     --success: #4ade80;
     --success-hover: #86efac;
     --success-tint: rgba(74,222,128,0.14);
+    --warning: #fbbf24;
+    --warning-hover: #fcd34d;
+    --warning-tint: rgba(251,191,36,0.14);
   }
 
   * { box-sizing: border-box; }
@@ -448,18 +454,35 @@
     width: fit-content;
   }
 
-  .card-obs {
+  .card-obs-input {
+    font-family: inherit;
     font-size: 13.5px;
-    color: var(--text-muted);
+    color: var(--text);
     line-height: 1.5;
-    white-space: pre-wrap;
-    word-break: break-word;
     flex: 1;
+    min-height: 48px;
+    resize: vertical;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 6px 8px;
+    margin: 0 -8px;
+    background: transparent;
+    transition: border-color .15s ease, background .15s ease;
   }
 
-  .card-obs.empty {
+  .card-obs-input::placeholder {
+    color: var(--text-muted);
     font-style: italic;
-    opacity: 0.7;
+  }
+
+  .card-obs-input:hover {
+    border-color: var(--border);
+  }
+
+  .card-obs-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--input-bg);
   }
 
   .card-footer {
@@ -472,7 +495,8 @@
   }
 
   .btn-delete,
-  .btn-finalize {
+  .btn-finalize,
+  .btn-snooze {
     background: transparent;
     font-size: 13px;
     font-weight: 600;
@@ -489,6 +513,9 @@
 
   .btn-finalize { color: var(--success); margin-right: auto; }
   .btn-finalize:hover { background: var(--success-tint); color: var(--success-hover); }
+
+  .btn-snooze { color: var(--warning); }
+  .btn-snooze:hover { background: var(--warning-tint); color: var(--warning-hover); }
 
   .empty-state {
     grid-column: 1 / -1;
@@ -745,8 +772,12 @@
     return count;
   }
 
+  function overdueReference(item) {
+    return item.postponedAt || item.createdAt;
+  }
+
   function isOverdue(item) {
-    return item.status !== 'finalizada' && businessDaysSince(item.createdAt) >= OVERDUE_BUSINESS_DAYS;
+    return item.status !== 'finalizada' && businessDaysSince(overdueReference(item)) >= OVERDUE_BUSINESS_DAYS;
   }
 
   function render() {
@@ -795,19 +826,21 @@
 
       const overdue = isOverdue(item);
       const overdueHtml = overdue
-        ? `<span class="card-overdue-badge">⚠️ Em atraso (${businessDaysSince(item.createdAt)} dias úteis)</span>`
+        ? `<span class="card-overdue-badge">⚠️ Em atraso (${businessDaysSince(overdueReference(item))} dias úteis)</span>`
         : '';
 
       const finalizedHtml = item.status === 'finalizada'
         ? `<span class="card-finalized-badge">✅ Finalizado em ${formatDate(item.finalizadoAt)}</span>`
         : '';
 
-      const obsHtml = item.observacao
-        ? `<div class="card-obs">${escapeHtml(item.observacao)}</div>`
-        : `<div class="card-obs empty">Sem observações.</div>`;
+      const obsHtml = `<textarea class="card-obs-input" data-id="${item.id}" placeholder="Adicionar observação...">${escapeHtml(item.observacao)}</textarea>`;
 
       const finalizeBtnHtml = item.status !== 'finalizada'
         ? `<button class="btn-finalize" data-id="${item.id}">✅ Finalizar</button>`
+        : '';
+
+      const snoozeBtnHtml = overdue
+        ? `<button class="btn-snooze" data-id="${item.id}">⏰ Adiar 3 dias</button>`
         : '';
 
       return `
@@ -823,6 +856,7 @@
           ${obsHtml}
           <div class="card-footer">
             ${finalizeBtnHtml}
+            ${snoozeBtnHtml}
             <button class="btn-delete" data-id="${item.id}">🗑️ Excluir</button>
           </div>
         </div>
@@ -845,7 +879,8 @@
       observacao: obsInput.value.trim(),
       createdAt: Date.now(),
       status: 'pendente',
-      finalizadoAt: null
+      finalizadoAt: null,
+      postponedAt: null
     };
 
     const pautas = loadPautas();
@@ -878,6 +913,32 @@
         savePautas(pautas);
         render();
       }
+      return;
+    }
+
+    const snoozeBtn = e.target.closest('.btn-snooze');
+    if (snoozeBtn) {
+      const id = snoozeBtn.dataset.id;
+      const pautas = loadPautas();
+      const item = pautas.find(p => p.id === id);
+      if (item) {
+        item.postponedAt = Date.now();
+        savePautas(pautas);
+        render();
+      }
+    }
+  });
+
+  grid.addEventListener('focusout', (e) => {
+    const textarea = e.target.closest('.card-obs-input');
+    if (!textarea) return;
+
+    const id = textarea.dataset.id;
+    const pautas = loadPautas();
+    const item = pautas.find(p => p.id === id);
+    if (item) {
+      item.observacao = textarea.value.trim();
+      savePautas(pautas);
     }
   });
 
