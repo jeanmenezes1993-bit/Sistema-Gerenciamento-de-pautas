@@ -208,12 +208,6 @@
     gap: 10px;
   }
 
-  header.page-header p {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 14px;
-  }
-
   .theme-toggle {
     display: inline-flex;
     align-items: center;
@@ -588,7 +582,6 @@
   <header class="page-header">
     <div>
       <h1>🗂️ Gerenciador de Pautas</h1>
-      <p id="page-subtitle">Organize suas pautas em cards, com data e observações.</p>
     </div>
     <button class="theme-toggle" id="theme-toggle" type="button"></button>
   </header>
@@ -663,23 +656,19 @@
   const navFinalizados = document.getElementById('nav-finalizados');
   const formSection = document.getElementById('form-section');
   const cardsSection = document.getElementById('cards-section');
-  const pageSubtitle = document.getElementById('page-subtitle');
   const sectionTitleText = document.getElementById('section-title-text');
 
   const SCREENS = {
     cadastro: {
-      subtitle: 'Preencha os dados para cadastrar uma nova pauta.',
       showForm: true,
       showCards: false
     },
     pendentes: {
-      subtitle: 'Organize suas pautas em cards, com data e observações.',
       sectionTitle: 'Pautas Cadastradas',
       showForm: false,
       showCards: true
     },
     finalizados: {
-      subtitle: 'Registro das pautas já concluídas.',
       sectionTitle: 'Pautas Finalizadas',
       showForm: false,
       showCards: true
@@ -696,7 +685,6 @@
     navFinalizados.classList.toggle('active', screen === 'finalizados');
     formSection.style.display = config.showForm ? '' : 'none';
     cardsSection.style.display = config.showCards ? '' : 'none';
-    pageSubtitle.textContent = config.subtitle;
     if (config.sectionTitle) sectionTitleText.textContent = config.sectionTitle;
     closeSidebar();
     render();
