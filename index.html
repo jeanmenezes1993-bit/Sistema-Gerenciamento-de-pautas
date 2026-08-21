@@ -271,6 +271,32 @@
     color: var(--danger);
   }
 
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .checkbox-item input {
+    accent-color: var(--primary);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+  }
+
   input[type="text"],
   input[type="datetime-local"],
   select,
@@ -612,13 +638,21 @@
           </div>
 
           <div class="field">
-            <label for="destinatario">Direcionado para</label>
-            <select id="destinatario" name="destinatario">
-              <option value="">Selecione um responsável</option>
-              <option value="Solange Vilarino">Solange Vilarino</option>
-              <option value="Felipe Galvão">Felipe Galvão</option>
-              <option value="Jean Menezes">Jean Menezes</option>
-            </select>
+            <label>Direcionado para</label>
+            <div class="checkbox-group" id="destinatarios-group">
+              <label class="checkbox-item">
+                <input type="checkbox" name="destinatarios" value="Solange Vilarino">
+                <span>Solange Vilarino</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="destinatarios" value="Felipe Galvão">
+                <span>Felipe Galvão</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="destinatarios" value="Jean Menezes">
+                <span>Jean Menezes</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -720,12 +754,16 @@
   const pautaInput = document.getElementById('pauta');
   const dataInput = document.getElementById('dataInicial');
   const autorInput = document.getElementById('autor');
-  const destinatarioInput = document.getElementById('destinatario');
+  const destinatariosGroup = document.getElementById('destinatarios-group');
   const obsInput = document.getElementById('observacao');
   const grid = document.getElementById('cards-grid');
   const countBadge = document.getElementById('count-badge');
 
   let pautasCache = [];
+
+  function getSelectedDestinatarios() {
+    return Array.from(destinatariosGroup.querySelectorAll('input:checked')).map(el => el.value);
+  }
 
   function rowToItem(row) {
     return {
@@ -733,7 +771,7 @@
       pauta: row.pauta,
       dataInicial: row.data_inicial,
       autor: row.autor || '',
-      destinatario: row.destinatario || '',
+      destinatarios: row.destinatarios || [],
       observacao: row.observacao || '',
       createdAt: new Date(row.created_at).getTime(),
       status: row.status,
@@ -816,7 +854,7 @@
     const visible = pautas.filter(item => {
       if (currentScreen === 'nav-finalizados') return item.status === 'finalizada';
       if (currentScreen === 'nav-pendentes') return item.status !== 'finalizada';
-      if (pessoa) return item.destinatario === pessoa;
+      if (pessoa) return item.destinatarios.includes(pessoa);
       return false;
     });
     countBadge.textContent = visible.length;
@@ -860,8 +898,8 @@
         ? `<span class="card-author">👤 ${escapeHtml(item.autor)}</span>`
         : `<span class="card-author no-author">👤 Não informado</span>`;
 
-      const targetHtml = item.destinatario
-        ? `<span class="card-target">🎯 Para: ${escapeHtml(item.destinatario)}</span>`
+      const targetHtml = item.destinatarios.length > 0
+        ? item.destinatarios.map(nome => `<span class="card-target">🎯 ${escapeHtml(nome)}</span>`).join('')
         : `<span class="card-target no-target">🎯 Sem direcionamento</span>`;
 
       const overdue = isOverdue(item);
@@ -917,7 +955,7 @@
       pauta,
       data_inicial: dataInput.value || null,
       autor: autorInput.value.trim(),
-      destinatario: destinatarioInput.value.trim(),
+      destinatarios: getSelectedDestinatarios(),
       observacao: obsInput.value.trim(),
       status: 'pendente'
     });
