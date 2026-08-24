@@ -257,7 +257,7 @@
   .field-row {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 16px 20px;
   }
 
@@ -269,6 +269,13 @@
 
   .field label .required {
     color: var(--danger);
+  }
+
+  .field label .field-optional {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 0.75;
   }
 
   .checkbox-group {
@@ -462,6 +469,19 @@
   .card-target.no-target {
     color: var(--text-muted);
     background: var(--tint-neutral);
+  }
+
+  .card-deadline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--warning);
+    background: var(--warning-tint);
+    padding: 5px 10px;
+    border-radius: 8px;
+    width: fit-content;
   }
 
   .card-overdue-badge {
@@ -817,6 +837,11 @@
           </div>
 
           <div class="field">
+            <label for="dataLimite">Data Limite <span class="field-optional">(opcional)</span></label>
+            <input type="datetime-local" id="dataLimite" name="dataLimite">
+          </div>
+
+          <div class="field">
             <label for="autor">Cadastrado por</label>
             <input type="text" id="autor" name="autor" placeholder="Seu nome">
           </div>
@@ -949,6 +974,7 @@
   const form = document.getElementById('pauta-form');
   const pautaInput = document.getElementById('pauta');
   const dataInput = document.getElementById('dataInicial');
+  const dataLimiteInput = document.getElementById('dataLimite');
   const autorInput = document.getElementById('autor');
   const destinatariosGroup = document.getElementById('destinatarios-group');
   const obsInput = document.getElementById('observacao');
@@ -966,6 +992,7 @@
       id: row.id,
       pauta: row.pauta,
       dataInicial: row.data_inicial,
+      dataLimite: row.data_limite,
       autor: row.autor || '',
       destinatarios: row.destinatarios || [],
       observacao: row.observacao || '',
@@ -1090,6 +1117,11 @@
         ? `<span class="card-date">📅 ${formattedDate}</span>`
         : `<span class="card-date no-date">📅 Sem data definida</span>`;
 
+      const formattedDeadline = formatDate(item.dataLimite);
+      const deadlineHtml = formattedDeadline
+        ? `<span class="card-deadline">⏳ Prazo: ${formattedDeadline}</span>`
+        : '';
+
       const authorHtml = item.autor
         ? `<span class="card-author">👤 ${escapeHtml(item.autor)}</span>`
         : `<span class="card-author no-author">👤 Não informado</span>`;
@@ -1123,6 +1155,7 @@
           <div class="card-title">${escapeHtml(item.pauta)}</div>
           <div class="card-meta">
             ${dateHtml}
+            ${deadlineHtml}
             ${authorHtml}
             ${targetHtml}
             ${overdueHtml}
@@ -1151,6 +1184,7 @@
     const { error } = await supabaseClient.from('pautas').insert({
       pauta,
       data_inicial: dataInput.value || null,
+      data_limite: dataLimiteInput.value || null,
       autor: autorInput.value.trim(),
       destinatarios: getSelectedDestinatarios(),
       observacao: obsInput.value.trim(),
