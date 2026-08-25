@@ -1038,6 +1038,13 @@
     });
   }
 
+  function localDateTimeToISO(value) {
+    if (!value) return null;
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return null;
+    return date.toISOString();
+  }
+
   function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
@@ -1183,8 +1190,8 @@
 
     const { error } = await supabaseClient.from('pautas').insert({
       pauta,
-      data_inicial: dataInput.value || null,
-      data_limite: dataLimiteInput.value || null,
+      data_inicial: localDateTimeToISO(dataInput.value),
+      data_limite: localDateTimeToISO(dataLimiteInput.value),
       autor: autorInput.value.trim(),
       destinatarios: getSelectedDestinatarios(),
       observacao: obsInput.value.trim(),
