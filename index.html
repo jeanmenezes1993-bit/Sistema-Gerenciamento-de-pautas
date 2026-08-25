@@ -1329,7 +1329,6 @@
 
   const LOGIN_USER = 'Estoque';
   const LOGIN_PASS = '12345678';
-  const AUTH_KEY = 'pautas_auth';
 
   const loginScreen = document.getElementById('login-screen');
   const appRoot = document.getElementById('app-root');
@@ -1355,7 +1354,6 @@
     loginError.style.display = 'none';
 
     if (loginUser.value.trim() === LOGIN_USER && loginPassword.value === LOGIN_PASS) {
-      localStorage.setItem(AUTH_KEY, 'true');
       loginPassword.value = '';
       showApp();
     } else {
@@ -1365,12 +1363,10 @@
   });
 
   logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem(AUTH_KEY);
     showLogin();
   });
 
-  if (localStorage.getItem(AUTH_KEY) === 'true') showApp();
-  else showLogin();
+  showLogin();
 </script>
 
 </body>
