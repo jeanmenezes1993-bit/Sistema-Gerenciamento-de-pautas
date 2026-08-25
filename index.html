@@ -435,6 +435,15 @@
     .card.pending-blink { animation: none; box-shadow: 0 0 0 2px var(--success); }
   }
 
+  .card-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--primary);
+    margin-bottom: -6px;
+  }
+
   .card-title {
     font-size: 17px;
     font-weight: 700;
@@ -1051,6 +1060,13 @@
     return div.innerHTML;
   }
 
+  function tituloDirecionamento(destinatarios) {
+    if (!destinatarios || destinatarios.length === 0) return '';
+    const nomes = destinatarios.map(nome => nome.split(' ')[0]);
+    if (nomes.length === 1) return `Pauta de ${nomes[0]}`;
+    return `Pauta de ${nomes.slice(0, -1).join(', ')} e ${nomes[nomes.length - 1]}`;
+  }
+
   const OVERDUE_BUSINESS_DAYS = 3;
 
   function businessDaysSince(timestamp) {
@@ -1137,6 +1153,11 @@
         ? item.destinatarios.map(nome => `<span class="card-target">🎯 ${escapeHtml(nome)}</span>`).join('')
         : `<span class="card-target no-target">🎯 Sem direcionamento</span>`;
 
+      const eyebrowText = tituloDirecionamento(item.destinatarios);
+      const eyebrowHtml = eyebrowText
+        ? `<div class="card-eyebrow">${escapeHtml(eyebrowText)}</div>`
+        : '';
+
       const overdue = isOverdue(item);
       const pendingBlink = item.status !== 'finalizada' && !overdue;
       const overdueHtml = overdue
@@ -1159,6 +1180,7 @@
 
       return `
         <div class="card${overdue ? ' overdue' : ''}${pendingBlink ? ' pending-blink' : ''}" data-id="${item.id}">
+          ${eyebrowHtml}
           <div class="card-title">${escapeHtml(item.pauta)}</div>
           <div class="card-meta">
             ${dateHtml}
