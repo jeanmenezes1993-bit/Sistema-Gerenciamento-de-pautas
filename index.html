@@ -147,6 +147,18 @@
   }
 
   .nav-btn:hover { background: var(--sidebar-hover); color: rgba(255,255,255,.85); }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
   .nav-btn.active { background: var(--sidebar-active); color: #5EEAD4; font-weight: 500; }
 
   .sidebar-footer {
@@ -809,9 +821,9 @@
       <button class="nav-btn active" id="nav-pendentes" type="button">🗒️ Pautas</button>
       <button class="nav-btn" id="nav-finalizados" type="button">✅ Finalizados</button>
       <div class="nav-section-label" style="margin-top:6px;">Pessoas</div>
-      <button class="nav-btn" id="nav-pessoa-solange" type="button" data-pessoa="Solange Vilarino">👤 Solange Vilarino</button>
-      <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão">👤 Felipe Galvão</button>
-      <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes">👤 Jean Menezes</button>
+      <button class="nav-btn" id="nav-pessoa-solange" type="button" data-pessoa="Solange Vilarino">👤 Solange Vilarino <span class="nav-badge" id="badge-pessoa-solange" style="display:none;"></span></button>
+      <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão">👤 Felipe Galvão <span class="nav-badge" id="badge-pessoa-felipe" style="display:none;"></span></button>
+      <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes">👤 Jean Menezes <span class="nav-badge" id="badge-pessoa-jean" style="display:none;"></span></button>
     </nav>
     <div class="sidebar-footer">
       Sistema de uso interno
@@ -1093,9 +1105,27 @@
     return item.status !== 'finalizada' && businessDaysSince(overdueReference(item)) >= OVERDUE_BUSINESS_DAYS;
   }
 
+  function updateNavBadges() {
+    document.querySelectorAll('.nav-btn[data-pessoa]').forEach(btn => {
+      const pessoa = btn.dataset.pessoa;
+      const badge = document.getElementById('badge-' + btn.id.replace(/^nav-/, ''));
+      if (!badge) return;
+
+      const count = pautasCache.filter(p => p.status !== 'finalizada' && p.destinatarios.includes(pessoa)).length;
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = '';
+      } else {
+        badge.style.display = 'none';
+      }
+    });
+  }
+
   function render() {
     const pautas = pautasCache;
     const pessoa = currentPessoaFiltro();
+
+    updateNavBadges();
 
     const visible = pautas.filter(item => {
       if (currentScreen === 'nav-finalizados') return item.status === 'finalizada';
