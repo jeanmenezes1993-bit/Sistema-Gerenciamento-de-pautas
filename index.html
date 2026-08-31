@@ -1092,129 +1092,105 @@
   }
 
   .lock-icon {
-    width: 46px;
-    height: 46px;
-    margin: 0 auto 14px;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 22px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(34,211,238,0.08);
-    border: 1px solid rgba(34,211,238,0.4);
-    color: #22D3EE;
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.75);
     animation: lockIconPulse 2.4s ease-in-out infinite;
   }
 
   @keyframes lockIconPulse {
-    0%, 100% { color: #22D3EE; box-shadow: 0 0 10px rgba(34,211,238,0.3); }
-    50% { color: #C4B5FD; box-shadow: 0 0 18px rgba(139,92,246,0.45); }
+    0%, 100% { color: rgba(255,255,255,0.75); border-color: rgba(34,211,238,0.5); box-shadow: 0 0 10px rgba(34,211,238,0.2); }
+    50% { color: #C4B5FD; border-color: rgba(139,92,246,0.6); box-shadow: 0 0 18px rgba(139,92,246,0.35); }
   }
 
-  .lock-card h3 {
-    font-family: 'Orbitron', 'Segoe UI', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: #E7FBFF;
-    text-shadow: 0 0 12px rgba(34,211,238,0.55);
-    margin: 0 0 8px;
-    animation: lockTextBlink 2.4s ease-in-out infinite;
+  .lock-field-row {
+    position: relative;
+    margin-bottom: 12px;
+    text-align: left;
   }
 
-  @keyframes lockTextBlink {
-    0%, 100% { opacity: 1; text-shadow: 0 0 12px rgba(34,211,238,0.55); }
-    50% { opacity: 0.72; text-shadow: 0 0 20px rgba(139,92,246,0.65); }
+  .lock-field-row svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.4);
+    pointer-events: none;
   }
 
-  .lock-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'Orbitron', 'Segoe UI', sans-serif;
-    font-size: 9.5px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: rgba(231,251,255,0.5);
-    margin-bottom: 20px;
-  }
-
-  .lock-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #F43F5E;
-    box-shadow: 0 0 6px #F43F5E;
-    animation: lockDotBlink 1.1s steps(1) infinite;
-  }
-
-  @keyframes lockDotBlink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0.15; }
-  }
-
-  .lock-card .field { text-align: left; }
-
-  .lock-card label {
-    font-family: 'Orbitron', 'Segoe UI', sans-serif;
-    font-size: 9.5px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: rgba(231,251,255,0.55);
-  }
-
-  .lock-card input {
-    background: rgba(34,211,238,0.05);
-    border: 1px solid rgba(34,211,238,0.3);
-    color: #E7FBFF;
-    letter-spacing: .3em;
-    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+  .lock-field-row input {
+    width: 100%;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.09);
+    color: #F2F5F7;
+    padding: 12px 14px 12px 40px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    letter-spacing: .04em;
     transition: border-color .15s, box-shadow .15s;
   }
 
-  .lock-card input::placeholder { color: rgba(231,251,255,0.25); letter-spacing: .3em; }
+  .lock-field-row input::placeholder { color: rgba(255,255,255,0.35); letter-spacing: normal; }
 
-  .lock-card input:focus {
+  .lock-field-row input:focus {
     outline: none;
     border-color: #22D3EE;
     box-shadow: 0 0 0 3px rgba(34,211,238,0.15);
   }
 
-  .lock-card .btn-secondary {
-    background: transparent;
-    border: 1px solid rgba(231,251,255,0.18);
-    color: rgba(231,251,255,0.7);
-  }
-
-  .lock-card .btn-secondary:hover { background: rgba(255,255,255,0.06); }
-
-  .lock-card .btn-primary {
-    background: linear-gradient(135deg, #22D3EE, #8B5CF6);
+  .lock-login-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px;
     border: none;
-    color: #05070C;
+    border-radius: 10px;
+    background: rgba(235,238,241,0.88);
+    color: #0A0A0C;
+    font-size: 12.5px;
     font-weight: 700;
-    letter-spacing: .04em;
-    box-shadow: 0 0 16px rgba(34,211,238,0.35);
-    transition: box-shadow .2s, transform .1s;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s, box-shadow .15s, transform .1s;
   }
 
-  .lock-card .btn-primary:hover {
-    box-shadow: 0 0 24px rgba(139,92,246,0.55);
+  .lock-login-btn:hover {
+    background: #FFFFFF;
+    box-shadow: 0 0 18px rgba(34,211,238,0.35);
     transform: translateY(-1px);
   }
+
+  .lock-cancel-link {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color .15s;
+  }
+
+  .lock-cancel-link:hover { color: rgba(255,255,255,0.7); }
 
   .lock-card .login-error {
     background: rgba(244,63,94,0.10);
     border: 1px solid rgba(244,63,94,0.35);
     color: #FCA5B1;
-    font-family: 'Orbitron', 'Segoe UI', sans-serif;
-    font-size: 10.5px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
+    font-size: 12px;
+    margin-top: 4px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .lock-card, .lock-scanline, .lock-icon, .lock-card h3, .lock-dot {
+    .lock-card, .lock-scanline, .lock-icon {
       animation: none !important;
     }
   }
@@ -1427,19 +1403,19 @@
   <form class="modal-card lock-card" id="pessoa-lock-form">
     <div class="lock-scanline"></div>
     <div class="lock-icon">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
     </div>
-    <h3>Área Restrita</h3>
-    <div class="lock-status"><span class="lock-dot"></span>Acesso monitorado</div>
-    <div class="field">
-      <label for="pessoa-lock-password">Senha</label>
-      <input type="password" id="pessoa-lock-password" placeholder="••••••••" autocomplete="off">
+    <div class="lock-field-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <input type="text" id="pessoa-lock-user" placeholder="Usuário" autocomplete="off">
     </div>
-    <div class="login-error" id="pessoa-lock-error" style="display:none;">Senha incorreta.</div>
-    <div class="modal-actions">
-      <button type="button" class="btn-secondary" id="pessoa-lock-cancel">Cancelar</button>
-      <button type="submit" class="btn-primary">Entrar</button>
+    <div class="lock-field-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <input type="password" id="pessoa-lock-password" placeholder="Senha" autocomplete="off">
     </div>
+    <div class="login-error" id="pessoa-lock-error" style="display:none;">Usuário ou senha incorretos.</div>
+    <button type="submit" class="lock-login-btn">Login</button>
+    <button type="button" class="lock-cancel-link" id="pessoa-lock-cancel">Cancelar</button>
   </form>
 </div>
 
@@ -1573,21 +1549,24 @@
     'nav-pessoa-jean': '040971',
     'nav-colaboradores': '040971'
   };
+  const SCREEN_USER = 'jean menezes';
   const unlockedScreens = new Set();
   let pendingLockScreen = null;
 
   const pessoaLockOverlay = document.getElementById('pessoa-lock-overlay');
   const pessoaLockForm = document.getElementById('pessoa-lock-form');
+  const pessoaLockUser = document.getElementById('pessoa-lock-user');
   const pessoaLockPassword = document.getElementById('pessoa-lock-password');
   const pessoaLockError = document.getElementById('pessoa-lock-error');
   const pessoaLockCancel = document.getElementById('pessoa-lock-cancel');
 
   function openPessoaLock(screenId) {
     pendingLockScreen = screenId;
+    pessoaLockUser.value = '';
     pessoaLockPassword.value = '';
     pessoaLockError.style.display = 'none';
     pessoaLockOverlay.classList.add('open');
-    pessoaLockPassword.focus();
+    pessoaLockUser.focus();
   }
 
   function closePessoaLock() {
@@ -1604,7 +1583,10 @@
     e.preventDefault();
     if (!pendingLockScreen) return;
 
-    if (pessoaLockPassword.value === SCREEN_PASSWORDS[pendingLockScreen]) {
+    const userOk = pessoaLockUser.value.trim().toLowerCase() === SCREEN_USER;
+    const passOk = pessoaLockPassword.value === SCREEN_PASSWORDS[pendingLockScreen];
+
+    if (userOk && passOk) {
       unlockedScreens.add(pendingLockScreen);
       const target = pendingLockScreen;
       closePessoaLock();
