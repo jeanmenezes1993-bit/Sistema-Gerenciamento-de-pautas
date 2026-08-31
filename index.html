@@ -573,7 +573,8 @@
 
   .btn-delete,
   .btn-finalize,
-  .btn-snooze {
+  .btn-snooze,
+  .btn-restore {
     background: transparent;
     font-size: 13px;
     font-weight: 600;
@@ -590,6 +591,9 @@
 
   .btn-snooze { grid-column: 2; justify-self: center; color: var(--warning); }
   .btn-snooze:hover { background: var(--warning-tint); color: var(--warning-hover); }
+
+  .btn-restore { grid-column: 1; justify-self: start; color: var(--primary); }
+  .btn-restore:hover { background: var(--tint); color: var(--primary-hover); }
 
   .btn-delete { grid-column: 3; justify-self: end; color: var(--danger); }
   .btn-delete:hover { background: var(--danger-tint); color: var(--danger-hover); }
@@ -1208,6 +1212,10 @@
         ? `<button class="btn-snooze" data-id="${item.id}">⏰ Adiar</button>`
         : '';
 
+      const restoreBtnHtml = item.status === 'finalizada'
+        ? `<button class="btn-restore" data-id="${item.id}">↩️ Restaurar</button>`
+        : '';
+
       return `
         <div class="card${overdue ? ' overdue' : ''}${pendingBlink ? ' pending-blink' : ''}" data-id="${item.id}">
           ${eyebrowHtml}
@@ -1224,6 +1232,7 @@
           <div class="card-footer">
             ${finalizeBtnHtml}
             ${snoozeBtnHtml}
+            ${restoreBtnHtml}
             <button class="btn-delete" data-id="${item.id}">🗑️ Excluir</button>
           </div>
         </div>
@@ -1281,6 +1290,18 @@
         .update({ status: 'finalizada', finalizado_at: new Date().toISOString() })
         .eq('id', id);
       if (error) { console.error('Erro ao finalizar pauta', error); return; }
+      await fetchPautas();
+      return;
+    }
+
+    const restoreBtn = e.target.closest('.btn-restore');
+    if (restoreBtn) {
+      const id = restoreBtn.dataset.id;
+      const { error } = await supabaseClient
+        .from('pautas')
+        .update({ status: 'pendente', finalizado_at: null, postponed_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) { console.error('Erro ao restaurar pauta', error); return; }
       await fetchPautas();
       return;
     }
