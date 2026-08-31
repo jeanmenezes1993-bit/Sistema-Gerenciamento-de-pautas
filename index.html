@@ -1200,7 +1200,7 @@
     const visible = pautas.filter(item => {
       if (currentScreen === 'nav-finalizados') return item.status === 'finalizada';
       if (currentScreen === 'nav-pendentes') return item.status !== 'finalizada';
-      if (pessoa) return item.destinatarios.includes(pessoa);
+      if (pessoa) return item.destinatarios.includes(pessoa) && item.status !== 'finalizada';
       return false;
     });
     countBadge.textContent = visible.length;
