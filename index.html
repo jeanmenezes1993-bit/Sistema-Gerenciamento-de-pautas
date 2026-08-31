@@ -33,10 +33,13 @@
     --shadow-hover: 0 4px 14px rgba(15,52,96,0.12);
     --radius: 8px;
     --sidebar-w: 195px;
-    --sidebar-bg: #0B1D33;
-    --sidebar-hover: rgba(255,255,255,0.07);
-    --sidebar-active: rgba(169,132,44,0.22);
+    --sidebar-bg: #0A0A0C;
+    --sidebar-surface: #17171A;
+    --sidebar-hover: rgba(255,255,255,0.06);
+    --sidebar-active: #232326;
     --sidebar-text: rgba(255,255,255,0.55);
+    --sidebar-border: rgba(255,255,255,0.08);
+    --sidebar-label: #B9A6F5;
     --tint: #E7ECF3;
     --tint-text: var(--primary);
     --tint-neutral: #EEF1F5;
@@ -116,7 +119,7 @@
     align-items: center;
     gap: 10px;
     padding: 0 16px 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid var(--sidebar-border);
   }
 
   .sidebar-logo {
@@ -136,15 +139,45 @@
   .sidebar-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.35; }
   .sidebar-sub { font-size: 10px; color: rgba(255,255,255,0.4); }
 
-  .nav-section { padding: 12px 10px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
-  .nav-section-label { font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: .08em; text-transform: uppercase; padding: 8px 8px 4px; }
+  .sidebar-search {
+    margin: 14px 14px 4px;
+    position: relative;
+  }
+
+  .sidebar-search svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.35);
+    pointer-events: none;
+  }
+
+  .sidebar-search input {
+    width: 100%;
+    background: var(--sidebar-surface);
+    border: 1px solid var(--sidebar-border);
+    border-radius: 999px;
+    padding: 8px 12px 8px 32px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.85);
+    outline: none;
+    transition: border-color .12s;
+  }
+
+  .sidebar-search input::placeholder { color: rgba(255,255,255,0.35); }
+  .sidebar-search input:focus { border-color: rgba(255,255,255,0.25); }
+
+  .nav-section { padding: 14px 10px; flex: 1; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+  .nav-section-label { font-size: 10px; font-weight: 700; color: var(--sidebar-label); letter-spacing: .06em; text-transform: uppercase; padding: 14px 8px 6px; }
+  .nav-section-label:first-child { padding-top: 4px; }
 
   .nav-btn {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 9px 12px;
-    border-radius: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
     border: none;
     background: none;
     color: var(--sidebar-text);
@@ -169,11 +202,11 @@
     border-radius: 999px;
     flex-shrink: 0;
   }
-  .nav-btn.active { background: var(--sidebar-active); color: var(--gold-light); font-weight: 500; }
+  .nav-btn.active { background: var(--sidebar-active); color: #fff; font-weight: 600; }
 
   .sidebar-footer {
     padding: 12px 16px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid var(--sidebar-border);
     font-size: 10px;
     color: rgba(255,255,255,0.3);
   }
@@ -1119,17 +1152,21 @@
         <div class="sidebar-sub">Organização de reuniões</div>
       </div>
     </div>
-    <nav class="nav-section">
-      <div class="nav-section-label">Principal</div>
-      <button class="nav-btn" id="nav-cadastro" type="button">➕ Cadastrar Pauta</button>
-      <button class="nav-btn active" id="nav-pendentes" type="button">🗒️ Pautas</button>
-      <button class="nav-btn" id="nav-finalizados" type="button">✅ Finalizados</button>
-      <div class="nav-section-label" style="margin-top:6px;">Pessoas</div>
-      <button class="nav-btn" id="nav-pessoa-solange" type="button" data-pessoa="Solange Vilarino">👤 Solange Vilarino <span class="nav-badge" id="badge-pessoa-solange" style="display:none;"></span></button>
-      <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão">👤 Felipe Galvão <span class="nav-badge" id="badge-pessoa-felipe" style="display:none;"></span></button>
-      <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes">👤 Jean Menezes <span class="nav-badge" id="badge-pessoa-jean" style="display:none;"></span></button>
-      <div class="nav-section-label" style="margin-top:6px;">Administração</div>
-      <button class="nav-btn" id="nav-colaboradores" type="button">🧑‍💼 Colaboradores</button>
+    <div class="sidebar-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="sidebar-search-input" placeholder="Pesquisar...">
+    </div>
+    <nav class="nav-section" id="nav-section">
+      <div class="nav-section-label" data-group="principal">Principal</div>
+      <button class="nav-btn" id="nav-cadastro" type="button" data-group="principal">➕ Cadastrar Pauta</button>
+      <button class="nav-btn active" id="nav-pendentes" type="button" data-group="principal">🗒️ Pautas</button>
+      <button class="nav-btn" id="nav-finalizados" type="button" data-group="principal">✅ Finalizados</button>
+      <div class="nav-section-label" data-group="pessoas">Pessoas</div>
+      <button class="nav-btn" id="nav-pessoa-solange" type="button" data-pessoa="Solange Vilarino" data-group="pessoas">👤 Solange Vilarino <span class="nav-badge" id="badge-pessoa-solange" style="display:none;"></span></button>
+      <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão" data-group="pessoas">👤 Felipe Galvão <span class="nav-badge" id="badge-pessoa-felipe" style="display:none;"></span></button>
+      <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes" data-group="pessoas">👤 Jean Menezes <span class="nav-badge" id="badge-pessoa-jean" style="display:none;"></span></button>
+      <div class="nav-section-label" data-group="administracao">Administração</div>
+      <button class="nav-btn" id="nav-colaboradores" type="button" data-group="administracao">🧑‍💼 Colaboradores</button>
     </nav>
     <div class="sidebar-footer">
       Sistema de uso interno
@@ -1357,6 +1394,23 @@
   sidebarOverlay.addEventListener('click', closeSidebar);
 
   const navButtons = Array.from(document.querySelectorAll('.nav-section .nav-btn'));
+  const sidebarSearchInput = document.getElementById('sidebar-search-input');
+
+  if (sidebarSearchInput) {
+    sidebarSearchInput.addEventListener('input', () => {
+      const q = sidebarSearchInput.value.trim().toLowerCase();
+      const visibleGroups = new Set();
+      navButtons.forEach(btn => {
+        const matches = !q || btn.textContent.toLowerCase().includes(q);
+        btn.style.display = matches ? '' : 'none';
+        if (matches) visibleGroups.add(btn.dataset.group);
+      });
+      document.querySelectorAll('.nav-section-label').forEach(label => {
+        label.style.display = (!q || visibleGroups.has(label.dataset.group)) ? '' : 'none';
+      });
+    });
+  }
+
   const formSection = document.getElementById('form-section');
   const cardsSection = document.getElementById('cards-section');
   const colaboradoresSection = document.getElementById('colaboradores-section');
