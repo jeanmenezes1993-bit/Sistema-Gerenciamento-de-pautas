@@ -925,6 +925,21 @@
   </form>
 </div>
 
+<div class="modal-overlay" id="pessoa-lock-overlay">
+  <form class="modal-card" id="pessoa-lock-form">
+    <h3>Área restrita</h3>
+    <div class="field">
+      <label for="pessoa-lock-password">Senha</label>
+      <input type="password" id="pessoa-lock-password" placeholder="••••••••" autocomplete="off">
+    </div>
+    <div class="login-error" id="pessoa-lock-error" style="display:none;">Senha incorreta.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" id="pessoa-lock-cancel">Cancelar</button>
+      <button type="submit" class="btn-primary">Entrar</button>
+    </div>
+  </form>
+</div>
+
 <script>
   const menuToggle = document.getElementById('menu-toggle');
   const sidebar = document.getElementById('sidebar');
@@ -970,7 +985,58 @@
     render();
   }
 
-  navButtons.forEach(btn => btn.addEventListener('click', () => showScreen(btn.id)));
+  const SCREEN_PASSWORDS = {
+    'nav-pessoa-jean': '040971'
+  };
+  const unlockedScreens = new Set();
+  let pendingLockScreen = null;
+
+  const pessoaLockOverlay = document.getElementById('pessoa-lock-overlay');
+  const pessoaLockForm = document.getElementById('pessoa-lock-form');
+  const pessoaLockPassword = document.getElementById('pessoa-lock-password');
+  const pessoaLockError = document.getElementById('pessoa-lock-error');
+  const pessoaLockCancel = document.getElementById('pessoa-lock-cancel');
+
+  function openPessoaLock(screenId) {
+    pendingLockScreen = screenId;
+    pessoaLockPassword.value = '';
+    pessoaLockError.style.display = 'none';
+    pessoaLockOverlay.classList.add('open');
+    pessoaLockPassword.focus();
+  }
+
+  function closePessoaLock() {
+    pessoaLockOverlay.classList.remove('open');
+    pendingLockScreen = null;
+  }
+
+  pessoaLockCancel.addEventListener('click', closePessoaLock);
+  pessoaLockOverlay.addEventListener('click', (e) => {
+    if (e.target === pessoaLockOverlay) closePessoaLock();
+  });
+
+  pessoaLockForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!pendingLockScreen) return;
+
+    if (pessoaLockPassword.value === SCREEN_PASSWORDS[pendingLockScreen]) {
+      unlockedScreens.add(pendingLockScreen);
+      const target = pendingLockScreen;
+      closePessoaLock();
+      showScreen(target);
+    } else {
+      pessoaLockError.style.display = 'block';
+    }
+  });
+
+  navButtons.forEach(btn => btn.addEventListener('click', () => {
+    const requiredPass = SCREEN_PASSWORDS[btn.id];
+    if (requiredPass && !unlockedScreens.has(btn.id)) {
+      openPessoaLock(btn.id);
+      return;
+    }
+    showScreen(btn.id);
+  }));
 
   const THEME_KEY = 'pautas_theme';
   const themeToggle = document.getElementById('theme-toggle');
@@ -1436,6 +1502,7 @@
   });
 
   logoutBtn.addEventListener('click', () => {
+    unlockedScreens.clear();
     showLogin();
   });
 
