@@ -1081,18 +1081,6 @@
     }
   }
 
-  .lock-corner {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #22D3EE;
-    opacity: 0.85;
-  }
-  .lock-corner.tl { top: 8px; left: 8px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
-  .lock-corner.tr { top: 8px; right: 8px; border-left: none; border-bottom: none; border-radius: 0 4px 0 0; }
-  .lock-corner.bl { bottom: 8px; left: 8px; border-right: none; border-top: none; border-radius: 0 0 0 4px; }
-  .lock-corner.br { bottom: 8px; right: 8px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
-
   .lock-scanline {
     position: absolute;
     left: 0;
@@ -1442,10 +1430,6 @@
 
 <div class="modal-overlay lock-overlay" id="pessoa-lock-overlay">
   <form class="modal-card lock-card" id="pessoa-lock-form">
-    <div class="lock-corner tl"></div>
-    <div class="lock-corner tr"></div>
-    <div class="lock-corner bl"></div>
-    <div class="lock-corner br"></div>
     <div class="lock-scanline"></div>
     <div class="lock-icon">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
