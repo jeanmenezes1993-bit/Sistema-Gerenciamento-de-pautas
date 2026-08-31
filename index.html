@@ -978,15 +978,8 @@
     font-size: 20px;
     font-weight: 600;
     text-align: center;
-    margin: 0 0 4px;
-    color: var(--primary);
-  }
-
-  .login-card > p {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 13px;
     margin: 0 0 24px;
+    color: var(--primary);
   }
 
   .login-card .field {
@@ -997,6 +990,12 @@
     width: 100%;
     justify-content: center;
     margin-top: 4px;
+  }
+
+  .login-password-input {
+    padding: 14px 16px;
+    font-size: 17px;
+    letter-spacing: .12em;
   }
 
   .login-error {
@@ -1283,7 +1282,6 @@
   <form class="login-card" id="login-form">
     <div class="login-logo">🗂️</div>
     <h1>Gerenciador de Pautas</h1>
-    <p>Faça login para continuar</p>
 
     <div class="field">
       <label for="login-user">Usuário</label>
@@ -1292,7 +1290,7 @@
 
     <div class="field">
       <label for="login-password">Senha</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+      <input type="password" class="login-password-input" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
     </div>
 
     <button type="submit" class="btn-primary" id="login-btn">Entrar</button>
