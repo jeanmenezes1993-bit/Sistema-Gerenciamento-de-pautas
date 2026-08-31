@@ -640,6 +640,254 @@
     .container { padding-top: 72px; }
   }
 
+  /* ===== Modulo Cadastro de Colaboradores ===== */
+  .colab-module {
+    --primary: #1E4D8C;
+    --primary-hover: #163B6B;
+    --bg: #F3F6FA;
+    --surface: #FFFFFF;
+    --border: #DFE6EF;
+    --text: #1B2430;
+    --text-muted: #64748B;
+    --tint: #E8EEF7;
+    --tint-text: #1E4D8C;
+    --tint-neutral: #F1F3F6;
+    --input-bg: #FBFCFE;
+    --shadow: 0 4px 14px rgba(30,77,140,0.08);
+    --shadow-hover: 0 10px 26px rgba(30,77,140,0.14);
+    --radius: 14px;
+    --gold: #B8901E;
+    --gold-tint: #FBF3DE;
+  }
+
+  .colab-header { margin-bottom: 22px; }
+
+  .colab-header h2 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: .01em;
+  }
+
+  .colab-header p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .colab-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .colab-toolbar #colab-search {
+    flex: 1 1 220px;
+    min-width: 180px;
+  }
+
+  .colab-toolbar select {
+    flex: 0 1 170px;
+    width: auto;
+  }
+
+  .colab-toolbar .btn-primary {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .colab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .colab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    cursor: pointer;
+    transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+  }
+
+  .colab-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+    border-color: var(--primary);
+  }
+
+  .colab-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .colab-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .02em;
+    border: 2px solid var(--gold);
+  }
+
+  .colab-avatar-lg { width: 60px; height: 60px; font-size: 19px; }
+
+  .colab-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    line-height: 1.3;
+  }
+
+  .colab-cargo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .colab-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .colab-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--tint-text);
+    background: var(--tint);
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+
+  .colab-badge-subsetor {
+    color: var(--gold);
+    background: var(--gold-tint);
+  }
+
+  .colab-atividades {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .colab-atividades.empty { font-style: italic; opacity: .75; }
+
+  .colab-promocao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--gold-tint);
+    padding: 5px 10px;
+    border-radius: 8px;
+    width: fit-content;
+  }
+
+  .colab-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-colab-edit,
+  .btn-colab-delete {
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .15s ease, color .15s ease;
+  }
+
+  .btn-colab-edit { color: var(--primary); }
+  .btn-colab-edit:hover { background: var(--tint); color: var(--primary-hover); }
+
+  .btn-colab-delete { color: var(--danger); }
+  .btn-colab-delete:hover { background: var(--danger-tint); color: var(--danger-hover); }
+
+  .colab-field-row { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+  .colab-modal-card { max-width: 520px; }
+
+  .colab-view-card { max-width: 480px; display: flex; flex-direction: column; gap: 16px; }
+
+  .colab-view-header { display: flex; align-items: center; gap: 14px; }
+
+  .colab-view-header h3 {
+    margin: 0 0 2px;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+  }
+
+  .colab-view-cargo { font-size: 13.5px; font-weight: 600; color: var(--primary); }
+
+  .colab-view-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+  }
+
+  .colab-view-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  .colab-view-grid p,
+  .colab-view-card > div > p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 620px) {
+    .colab-toolbar .btn-primary { margin-left: 0; width: 100%; justify-content: center; }
+    .colab-toolbar select { flex: 1 1 100%; }
+  }
+
   .login-screen {
     min-height: 100vh;
     display: flex;
@@ -828,6 +1076,8 @@
       <button class="nav-btn" id="nav-pessoa-solange" type="button" data-pessoa="Solange Vilarino">👤 Solange Vilarino <span class="nav-badge" id="badge-pessoa-solange" style="display:none;"></span></button>
       <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão">👤 Felipe Galvão <span class="nav-badge" id="badge-pessoa-felipe" style="display:none;"></span></button>
       <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes">👤 Jean Menezes <span class="nav-badge" id="badge-pessoa-jean" style="display:none;"></span></button>
+      <div class="nav-section-label" style="margin-top:6px;">Administração</div>
+      <button class="nav-btn" id="nav-colaboradores" type="button">🧑‍💼 Colaboradores</button>
     </nav>
     <div class="sidebar-footer">
       Sistema de uso interno
@@ -909,6 +1159,28 @@
     </h2>
     <div class="cards-grid" id="cards-grid"></div>
   </section>
+
+  <section id="colaboradores-section" class="colab-module" style="display:none;">
+    <div class="colab-header">
+      <h2>Cadastro de Colaboradores</h2>
+      <p>Gestão e acompanhamento da equipe do Estoque</p>
+    </div>
+
+    <div class="colab-toolbar">
+      <input type="text" id="colab-search" placeholder="🔍 Pesquisar colaborador...">
+      <select id="colab-filter-subsetor"><option value="">Todos os subsetores</option></select>
+      <select id="colab-filter-cargo"><option value="">Todos os cargos</option></select>
+      <select id="colab-filter-funcao"><option value="">Todas as funções</option></select>
+      <select id="colab-sort">
+        <option value="nome">Ordenar por nome</option>
+        <option value="cargo">Ordenar por cargo</option>
+        <option value="subsetor">Ordenar por subsetor</option>
+      </select>
+      <button type="button" class="btn-primary" id="colab-new-btn">＋ Novo Colaborador</button>
+    </div>
+
+    <div class="colab-grid" id="colab-grid"></div>
+  </section>
 </div>
   </main>
 </div>
@@ -940,6 +1212,81 @@
   </form>
 </div>
 
+<div class="modal-overlay colab-module" id="colab-form-overlay">
+  <form class="modal-card colab-modal-card" id="colab-form">
+    <h3 id="colab-form-title">Novo Colaborador</h3>
+
+    <div class="field">
+      <label for="colab-nome">Nome <span class="required">*</span></label>
+      <input type="text" id="colab-nome" placeholder="Nome completo" required>
+    </div>
+
+    <div class="field-row colab-field-row">
+      <div class="field">
+        <label for="colab-cargo">Cargo</label>
+        <input type="text" id="colab-cargo" placeholder="Ex: Gerente de Estoque">
+      </div>
+      <div class="field">
+        <label for="colab-funcao">Função</label>
+        <input type="text" id="colab-funcao" placeholder="Ex: Gestão do Estoque">
+      </div>
+      <div class="field">
+        <label for="colab-subsetor">Subsetor</label>
+        <input type="text" id="colab-subsetor" placeholder="Ex: Estoque Geral">
+      </div>
+      <div class="field">
+        <label for="colab-promocao">Última Promoção</label>
+        <input type="date" id="colab-promocao">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="colab-atividades">Atividades Exercidas</label>
+      <textarea id="colab-atividades" placeholder="Principais atividades e responsabilidades..."></textarea>
+    </div>
+
+    <input type="hidden" id="colab-id">
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" id="colab-form-cancel">Cancelar</button>
+      <button type="submit" class="btn-primary">Salvar</button>
+    </div>
+  </form>
+</div>
+
+<div class="modal-overlay colab-module" id="colab-view-overlay">
+  <div class="modal-card colab-modal-card colab-view-card">
+    <div class="colab-view-header">
+      <div class="colab-avatar colab-avatar-lg" id="colab-view-avatar"></div>
+      <div>
+        <h3 id="colab-view-nome"></h3>
+        <div class="colab-view-cargo" id="colab-view-cargo"></div>
+      </div>
+    </div>
+    <div class="colab-view-grid">
+      <div>
+        <span class="colab-view-label">Função</span>
+        <p id="colab-view-funcao"></p>
+      </div>
+      <div>
+        <span class="colab-view-label">Subsetor</span>
+        <p id="colab-view-subsetor"></p>
+      </div>
+      <div>
+        <span class="colab-view-label">Última Promoção</span>
+        <p id="colab-view-promocao"></p>
+      </div>
+    </div>
+    <div>
+      <span class="colab-view-label">Atividades Exercidas</span>
+      <p id="colab-view-atividades"></p>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" id="colab-view-close">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const menuToggle = document.getElementById('menu-toggle');
   const sidebar = document.getElementById('sidebar');
@@ -960,6 +1307,7 @@
   const navButtons = Array.from(document.querySelectorAll('.nav-section .nav-btn'));
   const formSection = document.getElementById('form-section');
   const cardsSection = document.getElementById('cards-section');
+  const colaboradoresSection = document.getElementById('colaboradores-section');
   const sectionTitleText = document.getElementById('section-title-text');
 
   let currentScreen = 'nav-pendentes';
@@ -974,19 +1322,24 @@
     navButtons.forEach(btn => btn.classList.toggle('active', btn.id === screen));
 
     const pessoa = currentPessoaFiltro();
+    const isColaboradores = screen === 'nav-colaboradores';
+
     formSection.style.display = screen === 'nav-cadastro' ? '' : 'none';
-    cardsSection.style.display = screen === 'nav-cadastro' ? 'none' : '';
+    cardsSection.style.display = (screen === 'nav-cadastro' || isColaboradores) ? 'none' : '';
+    colaboradoresSection.style.display = isColaboradores ? '' : 'none';
 
     if (screen === 'nav-pendentes') sectionTitleText.textContent = 'Pautas Cadastradas';
     else if (screen === 'nav-finalizados') sectionTitleText.textContent = 'Pautas Finalizadas';
     else if (pessoa) sectionTitleText.textContent = `Pautas de ${pessoa}`;
 
     closeSidebar();
-    render();
+    if (isColaboradores) renderColaboradores();
+    else render();
   }
 
   const SCREEN_PASSWORDS = {
-    'nav-pessoa-jean': '040971'
+    'nav-pessoa-jean': '040971',
+    'nav-colaboradores': '040971'
   };
   const unlockedScreens = new Set();
   let pendingLockScreen = null;
@@ -1450,6 +1803,263 @@
 
   let appInitialized = false;
 
+  // ===== Cadastro de Colaboradores =====
+  let colaboradoresCache = [];
+
+  const colabGrid = document.getElementById('colab-grid');
+  const colabSearch = document.getElementById('colab-search');
+  const colabFilterSubsetor = document.getElementById('colab-filter-subsetor');
+  const colabFilterCargo = document.getElementById('colab-filter-cargo');
+  const colabFilterFuncao = document.getElementById('colab-filter-funcao');
+  const colabSort = document.getElementById('colab-sort');
+  const colabNewBtn = document.getElementById('colab-new-btn');
+
+  const colabFormOverlay = document.getElementById('colab-form-overlay');
+  const colabForm = document.getElementById('colab-form');
+  const colabFormTitle = document.getElementById('colab-form-title');
+  const colabFormCancel = document.getElementById('colab-form-cancel');
+  const colabIdInput = document.getElementById('colab-id');
+  const colabNomeInput = document.getElementById('colab-nome');
+  const colabCargoInput = document.getElementById('colab-cargo');
+  const colabFuncaoInput = document.getElementById('colab-funcao');
+  const colabSubsetorInput = document.getElementById('colab-subsetor');
+  const colabPromocaoInput = document.getElementById('colab-promocao');
+  const colabAtividadesInput = document.getElementById('colab-atividades');
+
+  const colabViewOverlay = document.getElementById('colab-view-overlay');
+  const colabViewClose = document.getElementById('colab-view-close');
+
+  function colabRowToItem(row) {
+    return {
+      id: row.id,
+      nome: row.nome,
+      cargo: row.cargo || '',
+      funcao: row.funcao || '',
+      subsetor: row.subsetor || '',
+      atividades: row.atividades || '',
+      ultimaPromocao: row.ultima_promocao
+    };
+  }
+
+  async function fetchColaboradores() {
+    const { data, error } = await supabaseClient
+      .from('colaboradores')
+      .select('*')
+      .order('nome', { ascending: true });
+
+    if (error) {
+      console.error('Erro ao carregar colaboradores', error);
+      colabGrid.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">⚠️</div>
+          <h3>Erro ao carregar os dados</h3>
+          <p>Verifique sua conexão com a internet e recarregue a página.</p>
+        </div>
+      `;
+      return;
+    }
+
+    colaboradoresCache = data.map(colabRowToItem);
+    if (currentScreen === 'nav-colaboradores') renderColaboradores();
+  }
+
+  function colabIniciais(nome) {
+    return nome.trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase();
+  }
+
+  function colabFormatDate(value) {
+    if (!value) return null;
+    const [ano, mes, dia] = value.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  function populateColabFilters() {
+    const build = (select, values, placeholder) => {
+      const current = select.value;
+      const unique = Array.from(new Set(values.filter(Boolean))).sort();
+      select.innerHTML = `<option value="">${placeholder}</option>` +
+        unique.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+      if (unique.includes(current)) select.value = current;
+    };
+
+    build(colabFilterSubsetor, colaboradoresCache.map(c => c.subsetor), 'Todos os subsetores');
+    build(colabFilterCargo, colaboradoresCache.map(c => c.cargo), 'Todos os cargos');
+    build(colabFilterFuncao, colaboradoresCache.map(c => c.funcao), 'Todas as funções');
+  }
+
+  function renderColaboradores() {
+    populateColabFilters();
+
+    const termo = colabSearch.value.trim().toLowerCase();
+    const subsetorFiltro = colabFilterSubsetor.value;
+    const cargoFiltro = colabFilterCargo.value;
+    const funcaoFiltro = colabFilterFuncao.value;
+    const ordenarPor = colabSort.value;
+
+    let visiveis = colaboradoresCache.filter(c => {
+      if (termo && !c.nome.toLowerCase().includes(termo)) return false;
+      if (subsetorFiltro && c.subsetor !== subsetorFiltro) return false;
+      if (cargoFiltro && c.cargo !== cargoFiltro) return false;
+      if (funcaoFiltro && c.funcao !== funcaoFiltro) return false;
+      return true;
+    });
+
+    visiveis = [...visiveis].sort((a, b) => (a[ordenarPor] || '').localeCompare(b[ordenarPor] || ''));
+
+    if (visiveis.length === 0) {
+      colabGrid.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🧑‍💼</div>
+          <h3>Nenhum colaborador encontrado</h3>
+          <p>Clique em "＋ Novo Colaborador" para cadastrar o primeiro.</p>
+        </div>
+      `;
+      return;
+    }
+
+    colabGrid.innerHTML = visiveis.map(c => {
+      const promocaoHtml = c.ultimaPromocao
+        ? `<span class="colab-promocao">🏅 Última promoção: ${colabFormatDate(c.ultimaPromocao)}</span>`
+        : '';
+
+      const atividadesHtml = c.atividades
+        ? `<div class="colab-atividades">${escapeHtml(c.atividades)}</div>`
+        : `<div class="colab-atividades empty">Sem atividades registradas.</div>`;
+
+      return `
+        <div class="colab-card" data-id="${c.id}">
+          <div class="colab-card-header">
+            <div class="colab-avatar">${escapeHtml(colabIniciais(c.nome))}</div>
+            <div>
+              <div class="colab-name">${escapeHtml(c.nome)}</div>
+              ${c.cargo ? `<div class="colab-cargo">${escapeHtml(c.cargo)}</div>` : ''}
+            </div>
+          </div>
+          <div class="colab-meta">
+            ${c.funcao ? `<span class="colab-badge">${escapeHtml(c.funcao)}</span>` : ''}
+            ${c.subsetor ? `<span class="colab-badge colab-badge-subsetor">${escapeHtml(c.subsetor)}</span>` : ''}
+          </div>
+          ${atividadesHtml}
+          ${promocaoHtml}
+          <div class="colab-actions">
+            <button type="button" class="btn-colab-edit" data-id="${c.id}">✏️ Editar</button>
+            <button type="button" class="btn-colab-delete" data-id="${c.id}">🗑️ Excluir</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openColabForm(colaborador) {
+    colabForm.reset();
+    if (colaborador) {
+      colabFormTitle.textContent = 'Editar Colaborador';
+      colabIdInput.value = colaborador.id;
+      colabNomeInput.value = colaborador.nome;
+      colabCargoInput.value = colaborador.cargo;
+      colabFuncaoInput.value = colaborador.funcao;
+      colabSubsetorInput.value = colaborador.subsetor;
+      colabPromocaoInput.value = colaborador.ultimaPromocao || '';
+      colabAtividadesInput.value = colaborador.atividades;
+    } else {
+      colabFormTitle.textContent = 'Novo Colaborador';
+      colabIdInput.value = '';
+    }
+    colabFormOverlay.classList.add('open');
+    colabNomeInput.focus();
+  }
+
+  function closeColabForm() {
+    colabFormOverlay.classList.remove('open');
+  }
+
+  colabNewBtn.addEventListener('click', () => openColabForm(null));
+  colabFormCancel.addEventListener('click', closeColabForm);
+  colabFormOverlay.addEventListener('click', (e) => {
+    if (e.target === colabFormOverlay) closeColabForm();
+  });
+
+  colabForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = colabNomeInput.value.trim();
+    if (!nome) return;
+
+    const payload = {
+      nome,
+      cargo: colabCargoInput.value.trim(),
+      funcao: colabFuncaoInput.value.trim(),
+      subsetor: colabSubsetorInput.value.trim(),
+      atividades: colabAtividadesInput.value.trim(),
+      ultima_promocao: colabPromocaoInput.value || null
+    };
+
+    const id = colabIdInput.value;
+    const { error } = id
+      ? await supabaseClient.from('colaboradores').update(payload).eq('id', id)
+      : await supabaseClient.from('colaboradores').insert(payload);
+
+    if (error) {
+      console.error('Erro ao salvar colaborador', error);
+      alert('Não foi possível salvar o colaborador. Verifique sua conexão e tente novamente.');
+      return;
+    }
+
+    closeColabForm();
+    await fetchColaboradores();
+  });
+
+  function openColabView(colaborador) {
+    document.getElementById('colab-view-avatar').textContent = colabIniciais(colaborador.nome);
+    document.getElementById('colab-view-nome').textContent = colaborador.nome;
+    document.getElementById('colab-view-cargo').textContent = colaborador.cargo || 'Cargo não informado';
+    document.getElementById('colab-view-funcao').textContent = colaborador.funcao || '—';
+    document.getElementById('colab-view-subsetor').textContent = colaborador.subsetor || '—';
+    document.getElementById('colab-view-promocao').textContent = colaborador.ultimaPromocao ? colabFormatDate(colaborador.ultimaPromocao) : '—';
+    document.getElementById('colab-view-atividades').textContent = colaborador.atividades || 'Sem atividades registradas.';
+    colabViewOverlay.classList.add('open');
+  }
+
+  function closeColabView() {
+    colabViewOverlay.classList.remove('open');
+  }
+
+  colabViewClose.addEventListener('click', closeColabView);
+  colabViewOverlay.addEventListener('click', (e) => {
+    if (e.target === colabViewOverlay) closeColabView();
+  });
+
+  colabGrid.addEventListener('click', async (e) => {
+    const editBtn = e.target.closest('.btn-colab-edit');
+    if (editBtn) {
+      const colaborador = colaboradoresCache.find(c => c.id === editBtn.dataset.id);
+      if (colaborador) openColabForm(colaborador);
+      return;
+    }
+
+    const deleteBtn = e.target.closest('.btn-colab-delete');
+    if (deleteBtn) {
+      const colaborador = colaboradoresCache.find(c => c.id === deleteBtn.dataset.id);
+      if (colaborador && confirm(`Excluir o cadastro de "${colaborador.nome}"? Essa ação não pode ser desfeita.`)) {
+        const { error } = await supabaseClient.from('colaboradores').delete().eq('id', deleteBtn.dataset.id);
+        if (error) console.error('Erro ao excluir colaborador', error);
+        else await fetchColaboradores();
+      }
+      return;
+    }
+
+    const card = e.target.closest('.colab-card');
+    if (card) {
+      const colaborador = colaboradoresCache.find(c => c.id === card.dataset.id);
+      if (colaborador) openColabView(colaborador);
+    }
+  });
+
+  colabSearch.addEventListener('input', renderColaboradores);
+  colabFilterSubsetor.addEventListener('change', renderColaboradores);
+  colabFilterCargo.addEventListener('change', renderColaboradores);
+  colabFilterFuncao.addEventListener('change', renderColaboradores);
+  colabSort.addEventListener('change', renderColaboradores);
+
   function initApp() {
     if (appInitialized) return;
     appInitialized = true;
@@ -1461,8 +2071,16 @@
       })
       .subscribe();
 
+    supabaseClient
+      .channel('colaboradores-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'colaboradores' }, () => {
+        fetchColaboradores();
+      })
+      .subscribe();
+
     showScreen('nav-pendentes');
     fetchPautas();
+    fetchColaboradores();
     setInterval(render, 5 * 60 * 1000);
   }
 
