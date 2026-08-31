@@ -333,6 +333,7 @@
   }
 
   input[type="text"],
+  input[type="password"],
   input[type="datetime-local"],
   select,
   textarea {
@@ -992,12 +993,6 @@
     margin-top: 4px;
   }
 
-  .login-password-input {
-    padding: 14px 16px;
-    font-size: 17px;
-    letter-spacing: .12em;
-  }
-
   .login-error {
     margin-top: 14px;
     padding: 10px 14px;
@@ -1278,7 +1273,7 @@
 
     <div class="field">
       <label for="login-password">Senha</label>
-      <input type="password" class="login-password-input" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
     </div>
 
     <button type="submit" class="btn-primary" id="login-btn">Entrar</button>
