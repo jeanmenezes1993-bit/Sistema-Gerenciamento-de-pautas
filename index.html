@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerenciador de Pautas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234F46E5'/%3E%3Crect x='16' y='14' width='26' height='34' rx='4' fill='%233730A5'/%3E%3Crect x='22' y='20' width='26' height='34' rx='4' fill='%23FFFFFF'/%3E%3Cline x1='27' y1='29' x2='43' y2='29' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='36' x2='43' y2='36' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='43' x2='37' y2='43' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -642,32 +645,34 @@
 
   /* ===== Modulo Cadastro de Colaboradores ===== */
   .colab-module {
-    --primary: #1E4D8C;
-    --primary-hover: #163B6B;
-    --bg: #F3F6FA;
+    --primary: #0F3460;
+    --primary-hover: #0B2545;
+    --bg: #F4F6F9;
     --surface: #FFFFFF;
-    --border: #DFE6EF;
-    --text: #1B2430;
-    --text-muted: #64748B;
-    --tint: #E8EEF7;
-    --tint-text: #1E4D8C;
-    --tint-neutral: #F1F3F6;
-    --input-bg: #FBFCFE;
-    --shadow: 0 4px 14px rgba(30,77,140,0.08);
-    --shadow-hover: 0 10px 26px rgba(30,77,140,0.14);
-    --radius: 14px;
-    --gold: #B8901E;
-    --gold-tint: #FBF3DE;
+    --border: #D9DEE5;
+    --text: #16213E;
+    --text-muted: #5B6B82;
+    --tint: #E7ECF3;
+    --tint-text: #0F3460;
+    --tint-neutral: #EEF1F5;
+    --input-bg: #FFFFFF;
+    --shadow: 0 1px 3px rgba(15,52,96,0.10);
+    --shadow-hover: 0 4px 14px rgba(15,52,96,0.14);
+    --radius: 8px;
+    --gold: #A9842C;
+    --gold-tint: #F5EFDC;
+    --font-serif-corp: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   }
 
   .colab-header { margin-bottom: 22px; }
 
   .colab-header h2 {
     margin: 0 0 4px;
-    font-size: 22px;
-    font-weight: 800;
+    font-family: var(--font-serif-corp);
+    font-size: 26px;
+    font-weight: 600;
     color: var(--primary);
-    letter-spacing: .01em;
+    letter-spacing: 0;
   }
 
   .colab-header p {
