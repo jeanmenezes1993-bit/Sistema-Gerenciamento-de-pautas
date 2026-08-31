@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerenciador de Pautas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234F46E5'/%3E%3Crect x='16' y='14' width='26' height='34' rx='4' fill='%233730A5'/%3E%3Crect x='22' y='20' width='26' height='34' rx='4' fill='%23FFFFFF'/%3E%3Cline x1='27' y1='29' x2='43' y2='29' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='36' x2='43' y2='36' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='43' x2='37' y2='43' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -642,37 +645,51 @@
 
   /* ===== Modulo Cadastro de Colaboradores ===== */
   .colab-module {
-    --primary: #1E4D8C;
-    --primary-hover: #163B6B;
-    --bg: #F3F6FA;
-    --surface: #FFFFFF;
-    --border: #DFE6EF;
-    --text: #1B2430;
-    --text-muted: #64748B;
-    --tint: #E8EEF7;
-    --tint-text: #1E4D8C;
-    --tint-neutral: #F1F3F6;
-    --input-bg: #FBFCFE;
-    --shadow: 0 4px 14px rgba(30,77,140,0.08);
-    --shadow-hover: 0 10px 26px rgba(30,77,140,0.14);
-    --radius: 14px;
-    --gold: #B8901E;
-    --gold-tint: #FBF3DE;
+    --primary: #3ECF8E;
+    --primary-hover: #1F4B37;
+    --bg: #121212;
+    --surface: #121212;
+    --border: #2E2E2E;
+    --text: #FAFAFA;
+    --text-muted: #B4B4B4;
+    --tint: rgba(62,207,142,0.14);
+    --tint-text: #3ECF8E;
+    --tint-neutral: rgba(255,255,255,0.05);
+    --input-bg: #121212;
+    --shadow: none;
+    --shadow-hover: none;
+    --radius: 16px;
+    --gold: #B4B4B4;
+    --gold-tint: rgba(255,255,255,0.06);
+    --danger: #E5484D;
+    --danger-hover: #FF6369;
+    --danger-tint: rgba(229,72,77,0.14);
+    --font-circular: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-circular);
+    letter-spacing: -0.007em;
+  }
+
+  .colab-module input,
+  .colab-module select,
+  .colab-module textarea,
+  .colab-module button {
+    font-family: var(--font-circular);
   }
 
   .colab-header { margin-bottom: 22px; }
 
   .colab-header h2 {
-    margin: 0 0 4px;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--primary);
-    letter-spacing: .01em;
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.007em;
   }
 
   .colab-header p {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 14px;
+    font-weight: 400;
     color: var(--text-muted);
   }
 
@@ -704,6 +721,29 @@
     white-space: nowrap;
   }
 
+  .colab-module .btn-primary {
+    border-radius: 9999px;
+    font-weight: 500;
+    border: 1px solid var(--primary);
+  }
+
+  .colab-module .btn-primary:hover {
+    background: var(--primary);
+    border: 1px solid var(--primary-hover);
+  }
+
+  .colab-module .btn-secondary {
+    border-radius: 9999px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .colab-module .btn-secondary:hover {
+    border-color: var(--gold);
+    background: rgba(255,255,255,0.04);
+  }
+
   .colab-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -714,18 +754,15 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 20px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     cursor: pointer;
-    transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+    transition: border-color .18s ease;
   }
 
   .colab-card:hover {
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
     border-color: var(--primary);
   }
 
@@ -736,36 +773,34 @@
   }
 
   .colab-avatar {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: var(--primary);
-    color: #fff;
+    background: var(--tint);
+    color: var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: .02em;
-    border: 2px solid var(--gold);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.007em;
   }
 
   .colab-avatar-lg { width: 60px; height: 60px; font-size: 19px; }
 
   .colab-name {
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 500;
     color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: .02em;
+    letter-spacing: -0.007em;
     line-height: 1.3;
   }
 
   .colab-cargo {
     font-size: 13px;
-    font-weight: 600;
-    color: var(--primary);
+    font-weight: 400;
+    color: var(--text-muted);
   }
 
   .colab-meta {
@@ -779,11 +814,11 @@
     align-items: center;
     gap: 5px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--tint-text);
     background: var(--tint);
-    padding: 4px 10px;
-    border-radius: 8px;
+    padding: 4px 12px;
+    border-radius: 9999px;
   }
 
   .colab-badge-subsetor {
@@ -889,8 +924,8 @@
 
   .colab-view-header h3 {
     margin: 0 0 2px;
-    text-transform: uppercase;
-    letter-spacing: .02em;
+    font-weight: 500;
+    letter-spacing: -0.007em;
   }
 
   .colab-view-cargo { font-size: 13.5px; font-weight: 600; color: var(--primary); }
