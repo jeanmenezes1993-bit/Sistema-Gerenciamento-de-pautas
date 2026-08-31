@@ -6,7 +6,7 @@
 <title>Gerenciador de Pautas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234F46E5'/%3E%3Crect x='16' y='14' width='26' height='34' rx='4' fill='%233730A5'/%3E%3Crect x='22' y='20' width='26' height='34' rx='4' fill='%23FFFFFF'/%3E%3Cline x1='27' y1='29' x2='43' y2='29' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='36' x2='43' y2='36' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='27' y1='43' x2='37' y2='43' stroke='%234F46E5' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1049,6 +1049,197 @@
     margin-bottom: 8px;
   }
 
+  /* ---- Área Restrita: pop-up futurista ---- */
+  .lock-overlay {
+    background: rgba(2,4,10,0.72);
+    backdrop-filter: blur(3px);
+  }
+
+  .lock-card {
+    position: relative;
+    max-width: 360px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(34,211,238,0.09), transparent 60%),
+      #05070C;
+    border: 1px solid rgba(34,211,238,0.35);
+    border-radius: 14px;
+    padding: 30px 26px 24px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow:
+      0 0 0 1px rgba(34,211,238,0.08),
+      0 20px 50px rgba(0,0,0,0.55),
+      0 0 26px rgba(34,211,238,0.18);
+    animation: lockGlow 2.4s ease-in-out infinite;
+  }
+
+  @keyframes lockGlow {
+    0%, 100% {
+      border-color: rgba(34,211,238,0.35);
+      box-shadow: 0 0 0 1px rgba(34,211,238,0.08), 0 20px 50px rgba(0,0,0,0.55), 0 0 18px rgba(34,211,238,0.14);
+    }
+    50% {
+      border-color: rgba(139,92,246,0.55);
+      box-shadow: 0 0 0 1px rgba(139,92,246,0.14), 0 20px 50px rgba(0,0,0,0.55), 0 0 34px rgba(139,92,246,0.32);
+    }
+  }
+
+  .lock-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #22D3EE;
+    opacity: 0.85;
+  }
+  .lock-corner.tl { top: 8px; left: 8px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
+  .lock-corner.tr { top: 8px; right: 8px; border-left: none; border-bottom: none; border-radius: 0 4px 0 0; }
+  .lock-corner.bl { bottom: 8px; left: 8px; border-right: none; border-top: none; border-radius: 0 0 0 4px; }
+  .lock-corner.br { bottom: 8px; right: 8px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
+
+  .lock-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(34,211,238,0) 0%, rgba(34,211,238,0.10) 50%, rgba(34,211,238,0) 100%);
+    animation: lockScan 3.2s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes lockScan {
+    0% { top: -40%; }
+    100% { top: 100%; }
+  }
+
+  .lock-icon {
+    width: 46px;
+    height: 46px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.4);
+    color: #22D3EE;
+    animation: lockIconPulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes lockIconPulse {
+    0%, 100% { color: #22D3EE; box-shadow: 0 0 10px rgba(34,211,238,0.3); }
+    50% { color: #C4B5FD; box-shadow: 0 0 18px rgba(139,92,246,0.45); }
+  }
+
+  .lock-card h3 {
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #E7FBFF;
+    text-shadow: 0 0 12px rgba(34,211,238,0.55);
+    margin: 0 0 8px;
+    animation: lockTextBlink 2.4s ease-in-out infinite;
+  }
+
+  @keyframes lockTextBlink {
+    0%, 100% { opacity: 1; text-shadow: 0 0 12px rgba(34,211,238,0.55); }
+    50% { opacity: 0.72; text-shadow: 0 0 20px rgba(139,92,246,0.65); }
+  }
+
+  .lock-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(231,251,255,0.5);
+    margin-bottom: 20px;
+  }
+
+  .lock-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #F43F5E;
+    box-shadow: 0 0 6px #F43F5E;
+    animation: lockDotBlink 1.1s steps(1) infinite;
+  }
+
+  @keyframes lockDotBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0.15; }
+  }
+
+  .lock-card .field { text-align: left; }
+
+  .lock-card label {
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(231,251,255,0.55);
+  }
+
+  .lock-card input {
+    background: rgba(34,211,238,0.05);
+    border: 1px solid rgba(34,211,238,0.3);
+    color: #E7FBFF;
+    letter-spacing: .3em;
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    transition: border-color .15s, box-shadow .15s;
+  }
+
+  .lock-card input::placeholder { color: rgba(231,251,255,0.25); letter-spacing: .3em; }
+
+  .lock-card input:focus {
+    outline: none;
+    border-color: #22D3EE;
+    box-shadow: 0 0 0 3px rgba(34,211,238,0.15);
+  }
+
+  .lock-card .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(231,251,255,0.18);
+    color: rgba(231,251,255,0.7);
+  }
+
+  .lock-card .btn-secondary:hover { background: rgba(255,255,255,0.06); }
+
+  .lock-card .btn-primary {
+    background: linear-gradient(135deg, #22D3EE, #8B5CF6);
+    border: none;
+    color: #05070C;
+    font-weight: 700;
+    letter-spacing: .04em;
+    box-shadow: 0 0 16px rgba(34,211,238,0.35);
+    transition: box-shadow .2s, transform .1s;
+  }
+
+  .lock-card .btn-primary:hover {
+    box-shadow: 0 0 24px rgba(139,92,246,0.55);
+    transform: translateY(-1px);
+  }
+
+  .lock-card .login-error {
+    background: rgba(244,63,94,0.10);
+    border: 1px solid rgba(244,63,94,0.35);
+    color: #FCA5B1;
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lock-card, .lock-scanline, .lock-icon, .lock-card h3, .lock-dot {
+      animation: none !important;
+    }
+  }
+  /* ---- fim Área Restrita ---- */
+
   .modal-actions {
     display: flex;
     justify-content: flex-end;
@@ -1253,9 +1444,18 @@
   </form>
 </div>
 
-<div class="modal-overlay" id="pessoa-lock-overlay">
-  <form class="modal-card" id="pessoa-lock-form">
-    <h3>Área restrita</h3>
+<div class="modal-overlay lock-overlay" id="pessoa-lock-overlay">
+  <form class="modal-card lock-card" id="pessoa-lock-form">
+    <div class="lock-corner tl"></div>
+    <div class="lock-corner tr"></div>
+    <div class="lock-corner bl"></div>
+    <div class="lock-corner br"></div>
+    <div class="lock-scanline"></div>
+    <div class="lock-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    </div>
+    <h3>Área Restrita</h3>
+    <div class="lock-status"><span class="lock-dot"></span>Acesso monitorado</div>
     <div class="field">
       <label for="pessoa-lock-password">Senha</label>
       <input type="password" id="pessoa-lock-password" placeholder="••••••••" autocomplete="off">
