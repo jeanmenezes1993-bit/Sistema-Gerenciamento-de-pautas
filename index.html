@@ -20,59 +20,66 @@
 </script>
 <style>
   :root {
-    --bg: #F7F5F2;
+    --bg: #F4F6F9;
     --surface: #FFFFFF;
-    --border: #E8E4DD;
-    --text: #33312C;
-    --text-muted: #8A8577;
-    --primary: #0E9488;
-    --primary-hover: #0B776D;
-    --danger: #D6534A;
-    --danger-hover: #B5382F;
-    --shadow: 0 4px 14px rgba(51, 49, 44, 0.06);
-    --shadow-hover: 0 10px 24px rgba(51, 49, 44, 0.10);
-    --radius: 14px;
+    --border: #D9DEE5;
+    --text: #16213E;
+    --text-muted: #5B6B82;
+    --primary: #0F3460;
+    --primary-hover: #0B2545;
+    --danger: #B23A48;
+    --danger-hover: #8F2E39;
+    --shadow: 0 1px 3px rgba(15,52,96,0.08);
+    --shadow-hover: 0 4px 14px rgba(15,52,96,0.12);
+    --radius: 8px;
     --sidebar-w: 195px;
-    --sidebar-bg: #22221D;
+    --sidebar-bg: #0B1D33;
     --sidebar-hover: rgba(255,255,255,0.07);
-    --sidebar-active: rgba(45,212,182,0.20);
+    --sidebar-active: rgba(169,132,44,0.22);
     --sidebar-text: rgba(255,255,255,0.55);
-    --tint: #E3F4F1;
+    --tint: #E7ECF3;
     --tint-text: var(--primary);
-    --tint-neutral: #F1EEE8;
-    --input-bg: #FCFBF9;
-    --danger-tint: #FBECEA;
-    --success: #3F9142;
-    --success-hover: #2F7233;
-    --success-tint: #EBF5EA;
-    --warning: #B7791F;
-    --warning-hover: #8F5D14;
-    --warning-tint: #FAF1DF;
+    --tint-neutral: #EEF1F5;
+    --input-bg: #FFFFFF;
+    --danger-tint: #F7E7E9;
+    --success: #2F6F4F;
+    --success-hover: #235339;
+    --success-tint: #E7F0EA;
+    --warning: #A9842C;
+    --warning-hover: #8A6A20;
+    --warning-tint: #F5EFDC;
+    --gold: #A9842C;
+    --gold-light: #D9B872;
+    --gold-tint: #F5EFDC;
+    --font-serif-corp: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   }
 
   :root[data-theme="dark"] {
-    --bg: #1A1917;
-    --surface: #232220;
-    --border: rgba(255,250,240,0.09);
-    --text: #E9E6DF;
-    --text-muted: #9C978A;
-    --primary: #2DD4BF;
-    --primary-hover: #5EEAD4;
-    --danger: #E8897E;
-    --danger-hover: #F3AFA6;
+    --bg: #0B1220;
+    --surface: #131B2E;
+    --border: rgba(255,255,255,0.10);
+    --text: #E7ECF3;
+    --text-muted: #93A0B8;
+    --primary: #5B8DEF;
+    --primary-hover: #7DA6F5;
+    --danger: #E27C89;
+    --danger-hover: #EE9CA6;
     --shadow: 0 4px 14px rgba(0,0,0,0.35);
     --shadow-hover: 0 10px 24px rgba(0,0,0,0.45);
-    --tint: rgba(45,212,191,0.16);
-    --tint-text: #7DEEDD;
-    --tint-neutral: rgba(255,250,240,0.06);
-    --input-bg: #1A1917;
-    --danger-tint: rgba(232,137,126,0.14);
-    --success: #6FCB72;
-    --success-hover: #9BDF9C;
-    --success-tint: rgba(111,203,114,0.14);
-    --warning: #E5B75B;
-    --warning-hover: #F0CC85;
-    --warning-tint: rgba(229,183,91,0.14);
+    --tint: rgba(91,141,239,0.16);
+    --tint-text: #A8C2ED;
+    --tint-neutral: rgba(255,255,255,0.06);
+    --input-bg: #0B1220;
+    --danger-tint: rgba(226,124,137,0.14);
+    --success: #6FCB8A;
+    --success-hover: #93DBA8;
+    --success-tint: rgba(111,203,138,0.14);
+    --warning: #D4AF6A;
+    --warning-hover: #E3C58C;
+    --warning-tint: rgba(212,175,106,0.14);
+    --gold: #D4AF6A;
+    --gold-light: #E8CE94;
+    --gold-tint: rgba(212,175,106,0.14);
   }
 
   * { box-sizing: border-box; }
@@ -115,14 +122,14 @@
   .sidebar-logo {
     width: 34px;
     height: 34px;
-    background: #0E9488;
-    border-radius: 9px;
+    background: var(--gold);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 17px;
     font-weight: 800;
-    color: #fff;
+    color: #0B1D33;
     flex-shrink: 0;
   }
 
@@ -162,7 +169,7 @@
     border-radius: 999px;
     flex-shrink: 0;
   }
-  .nav-btn.active { background: var(--sidebar-active); color: #5EEAD4; font-weight: 500; }
+  .nav-btn.active { background: var(--sidebar-active); color: var(--gold-light); font-weight: 500; }
 
   .sidebar-footer {
     padding: 12px 16px;
@@ -216,12 +223,14 @@
   }
 
   header.page-header h1 {
+    font-family: var(--font-serif-corp);
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 600;
     margin: 0 0 4px;
     display: flex;
     align-items: center;
     gap: 10px;
+    color: var(--primary);
   }
 
   .theme-toggle {
@@ -951,7 +960,7 @@
   .login-logo {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: 10px;
     background: var(--primary);
     display: flex;
     align-items: center;
@@ -961,10 +970,12 @@
   }
 
   .login-card h1 {
-    font-size: 19px;
-    font-weight: 700;
+    font-family: var(--font-serif-corp);
+    font-size: 20px;
+    font-weight: 600;
     text-align: center;
     margin: 0 0 4px;
+    color: var(--primary);
   }
 
   .login-card > p {
