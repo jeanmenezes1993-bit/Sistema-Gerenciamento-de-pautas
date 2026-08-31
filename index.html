@@ -1199,7 +1199,7 @@
 
     const visible = pautas.filter(item => {
       if (currentScreen === 'nav-finalizados') return item.status === 'finalizada';
-      if (currentScreen === 'nav-pendentes') return item.status !== 'finalizada';
+      if (currentScreen === 'nav-pendentes') return item.status !== 'finalizada' && !item.destinatarios.includes('Jean Menezes');
       if (pessoa) return item.destinatarios.includes(pessoa) && item.status !== 'finalizada';
       return false;
     });
