@@ -20,17 +20,17 @@
 </script>
 <style>
   :root {
-    --bg: #F4F6F9;
+    --bg: #F6F4FA;
     --surface: #FFFFFF;
-    --border: #D9DEE5;
-    --text: #16213E;
-    --text-muted: #5B6B82;
-    --primary: #0F3460;
-    --primary-hover: #0B2545;
+    --border: #E4DFF0;
+    --text: #201C30;
+    --text-muted: #6B6480;
+    --primary: #7C3AED;
+    --primary-hover: #6D28D9;
     --danger: #B23A48;
     --danger-hover: #8F2E39;
-    --shadow: 0 1px 3px rgba(15,52,96,0.08);
-    --shadow-hover: 0 4px 14px rgba(15,52,96,0.12);
+    --shadow: 0 1px 3px rgba(32,28,48,0.08);
+    --shadow-hover: 0 4px 14px rgba(32,28,48,0.12);
     --radius: 8px;
     --sidebar-w: 195px;
     --sidebar-bg: #0A0A0C;
@@ -40,14 +40,14 @@
     --sidebar-text: rgba(255,255,255,0.55);
     --sidebar-border: rgba(255,255,255,0.08);
     --sidebar-label: #B9A6F5;
-    --tint: #E7ECF3;
+    --tint: #EDE9FE;
     --tint-text: var(--primary);
-    --tint-neutral: #EEF1F5;
+    --tint-neutral: #F1EEF8;
     --input-bg: #FFFFFF;
     --danger-tint: #F7E7E9;
-    --success: #2F6F4F;
-    --success-hover: #235339;
-    --success-tint: #E7F0EA;
+    --success: #16A34A;
+    --success-hover: #15803D;
+    --success-tint: #E5F6EB;
     --warning: #A9842C;
     --warning-hover: #8A6A20;
     --warning-tint: #F5EFDC;
@@ -61,22 +61,22 @@
     --bg: #0A0A0A;
     --surface: #171717;
     --border: rgba(255,255,255,0.10);
-    --text: #E7ECF3;
-    --text-muted: #93A0B8;
-    --primary: #5B8DEF;
-    --primary-hover: #7DA6F5;
+    --text: #ECEAF5;
+    --text-muted: #9C96B0;
+    --primary: #A78BFA;
+    --primary-hover: #C4B5FD;
     --danger: #E27C89;
     --danger-hover: #EE9CA6;
     --shadow: 0 4px 14px rgba(0,0,0,0.35);
     --shadow-hover: 0 10px 24px rgba(0,0,0,0.45);
-    --tint: rgba(91,141,239,0.16);
-    --tint-text: #A8C2ED;
+    --tint: rgba(167,139,250,0.16);
+    --tint-text: #C4B5FD;
     --tint-neutral: rgba(255,255,255,0.06);
     --input-bg: #0A0A0A;
     --danger-tint: rgba(226,124,137,0.14);
-    --success: #6FCB8A;
-    --success-hover: #93DBA8;
-    --success-tint: rgba(111,203,138,0.14);
+    --success: #22C55E;
+    --success-hover: #4ADE80;
+    --success-tint: rgba(34,197,94,0.14);
     --warning: #D4AF6A;
     --warning-hover: #E3C58C;
     --warning-tint: rgba(212,175,106,0.14);
@@ -176,10 +176,62 @@
   .nav-btn.active { background: var(--sidebar-active); color: #fff; font-weight: 600; }
 
   .sidebar-footer {
-    padding: 12px 16px;
+    padding: 10px 10px 12px;
     border-top: 1px solid var(--sidebar-border);
-    font-size: 10px;
-    color: rgba(255,255,255,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sidebar-theme-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px;
+    margin-top: 4px;
+  }
+
+  .sidebar-theme-icon {
+    display: flex;
+    color: rgba(255,255,255,0.45);
+    flex-shrink: 0;
+  }
+
+  .sidebar-theme-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    flex: 1;
+  }
+
+  .theme-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,255,255,0.18);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .18s ease;
+  }
+
+  .theme-switch-handle {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform .18s ease;
+  }
+
+  .theme-switch[aria-checked="true"] {
+    background: #22C55E;
+  }
+
+  .theme-switch[aria-checked="true"] .theme-switch-handle {
+    transform: translateX(16px);
   }
 
   .menu-toggle {
@@ -237,25 +289,6 @@
     color: var(--primary);
   }
 
-  .theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    box-shadow: var(--shadow);
-    transition: background .15s ease, border-color .15s ease;
-    flex-shrink: 0;
-  }
-
-  .theme-toggle:hover {
-    border-color: var(--primary);
-  }
 
   .form-card {
     background: var(--surface);
@@ -1280,11 +1313,19 @@
       <button class="nav-btn" id="nav-colaboradores" type="button" data-group="administracao">🧑‍💼 Colaboradores</button>
     </nav>
     <div class="sidebar-footer">
-      Sistema de uso interno
       <button class="logout-btn" id="logout-btn" type="button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Sair
       </button>
+      <div class="sidebar-theme-row">
+        <span class="sidebar-theme-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </span>
+        <span class="sidebar-theme-label" id="theme-toggle-label">Modo Claro</span>
+        <button class="theme-switch" id="theme-toggle" type="button" role="switch" aria-checked="false">
+          <span class="theme-switch-handle"></span>
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -1294,7 +1335,6 @@
     <div>
       <h1>🗂️ Gerenciador de Pautas</h1>
     </div>
-    <button class="theme-toggle" id="theme-toggle" type="button"></button>
   </header>
 
   <section class="form-card" id="form-section">
@@ -1623,13 +1663,15 @@
 
   const THEME_KEY = 'pautas_theme';
   const themeToggle = document.getElementById('theme-toggle');
+  const themeToggleLabel = document.getElementById('theme-toggle-label');
 
   function getCurrentTheme() {
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
   }
 
   function updateThemeToggleLabel(theme) {
-    themeToggle.textContent = theme === 'dark' ? '☀️ Tema Claro' : '🌙 Tema Escuro';
+    themeToggleLabel.textContent = theme === 'dark' ? 'Modo Escuro' : 'Modo Claro';
+    themeToggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
   }
 
   updateThemeToggleLabel(getCurrentTheme());
