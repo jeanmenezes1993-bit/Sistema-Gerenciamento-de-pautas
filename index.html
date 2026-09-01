@@ -1001,6 +1001,20 @@
     line-height: 1.5;
   }
 
+  .colab-view-list {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .colab-view-list li { padding-left: 2px; }
+  .colab-view-list li.empty { list-style: none; margin-left: -18px; color: var(--text-muted); font-style: italic; }
+
   @media (max-width: 620px) {
     .colab-toolbar .btn-primary { margin-left: 0; width: 100%; justify-content: center; }
     .colab-toolbar select { flex: 1 1 100%; }
@@ -1577,11 +1591,11 @@
     </div>
     <div>
       <span class="colab-view-label">Atividades Exercidas</span>
-      <p id="colab-view-atividades"></p>
+      <ul class="colab-view-list" id="colab-view-atividades"></ul>
     </div>
     <div id="colab-view-secundaria-wrap" style="display:none;">
       <span class="colab-view-label">Atividade Secundária</span>
-      <p id="colab-view-secundaria"></p>
+      <ul class="colab-view-list" id="colab-view-secundaria"></ul>
     </div>
     <div class="modal-actions">
       <button type="button" class="btn-secondary" id="colab-view-close">Fechar</button>
@@ -2357,6 +2371,23 @@
     await fetchColaboradores();
   });
 
+  function atividadesToItems(text) {
+    if (!text) return [];
+    let linhas = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (linhas.length <= 1 && text.includes(';')) {
+      linhas = text.split(';').map(l => l.trim()).filter(Boolean);
+    }
+    return linhas.map(l => l.replace(/;+\s*$/, '').trim()).filter(Boolean);
+  }
+
+  function atividadesToListHtml(text, emptyMessage) {
+    const itens = atividadesToItems(text);
+    if (itens.length === 0) {
+      return `<li class="empty">${escapeHtml(emptyMessage)}</li>`;
+    }
+    return itens.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  }
+
   function openColabView(colaborador) {
     document.getElementById('colab-view-avatar').textContent = colabIniciais(colaborador.nome);
     document.getElementById('colab-view-nome').textContent = colaborador.nome;
@@ -2364,10 +2395,10 @@
     document.getElementById('colab-view-funcao').textContent = colaborador.funcao || '—';
     document.getElementById('colab-view-subsetor').textContent = colaborador.subsetor || '—';
     document.getElementById('colab-view-promocao').textContent = colaborador.ultimaPromocao ? colabFormatDate(colaborador.ultimaPromocao) : '—';
-    document.getElementById('colab-view-atividades').textContent = colaborador.atividades || 'Sem atividades registradas.';
+    document.getElementById('colab-view-atividades').innerHTML = atividadesToListHtml(colaborador.atividades, 'Sem atividades registradas.');
     const secundariaWrap = document.getElementById('colab-view-secundaria-wrap');
     if (colaborador.atividadeSecundaria) {
-      document.getElementById('colab-view-secundaria').textContent = colaborador.atividadeSecundaria;
+      document.getElementById('colab-view-secundaria').innerHTML = atividadesToListHtml(colaborador.atividadeSecundaria, '');
       secundariaWrap.style.display = '';
     } else {
       secundariaWrap.style.display = 'none';
