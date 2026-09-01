@@ -602,9 +602,9 @@
     font-size: 13.5px;
     color: var(--text);
     line-height: 1.5;
-    flex: 1;
     min-height: 48px;
-    resize: vertical;
+    resize: none;
+    overflow: hidden;
     border: 1px solid transparent;
     border-radius: 8px;
     padding: 6px 8px;
@@ -1945,6 +1945,13 @@
         </div>
       `;
     }).join('');
+
+    grid.querySelectorAll('.card-obs-input').forEach(autoResizeTextarea);
+  }
+
+  function autoResizeTextarea(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
   }
 
   form.addEventListener('submit', async (e) => {
@@ -2017,6 +2024,11 @@
     if (snoozeBtn) {
       openSnoozeModal(snoozeBtn.dataset.id);
     }
+  });
+
+  grid.addEventListener('input', (e) => {
+    const textarea = e.target.closest('.card-obs-input');
+    if (textarea) autoResizeTextarea(textarea);
   });
 
   grid.addEventListener('focusout', async (e) => {
