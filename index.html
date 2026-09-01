@@ -2446,31 +2446,6 @@
     background: #FFFFFF;
     padding: 48px 56px;
   }
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 3px solid #0F3460;
-    padding-bottom: 18px;
-    margin-bottom: 32px;
-  }
-  header .brand { display: flex; align-items: center; gap: 12px; }
-  header .brand .logo {
-    width: 40px; height: 40px; border-radius: 8px;
-    background: #A9842C; color: #0B1D33;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-  header .brand .sysname { font-size: 12px; color: #5B6B82; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
-  header h1 {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: #0F3460;
-    margin: 2px 0 0;
-  }
-  header .data-geracao { font-size: 11px; color: #5B6B82; text-align: right; }
-
   .colab-header {
     display: flex;
     align-items: center;
@@ -2544,17 +2519,6 @@
 </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <div class="logo">🗂️</div>
-      <div>
-        <div class="sysname">Sistema de Gerenciamento — Estoque</div>
-        <h1>Relatório de Colaborador</h1>
-      </div>
-    </div>
-    <div class="data-geracao">Gerado em<br>${dataGeracao}</div>
-  </header>
-
   <div class="colab-header">
     <div class="avatar">${escapeHtml(colabIniciais(c.nome))}</div>
     <div>
