@@ -457,8 +457,9 @@
   }
 
   .cards-grid {
-    column-width: 280px;
-    column-gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
 
   .card {
@@ -472,8 +473,6 @@
     gap: 12px;
     transition: box-shadow .18s ease, transform .18s ease;
     animation: fadeIn .3s ease;
-    break-inside: avoid;
-    margin-bottom: 20px;
   }
 
   .card:hover {
@@ -667,7 +666,6 @@
 
   .empty-state {
     grid-column: 1 / -1;
-    column-span: all;
     text-align: center;
     padding: 64px 24px;
     color: var(--text-muted);
