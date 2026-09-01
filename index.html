@@ -32,7 +32,7 @@
     --shadow: 0 1px 3px rgba(15,52,96,0.08);
     --shadow-hover: 0 4px 14px rgba(15,52,96,0.12);
     --radius: 8px;
-    --sidebar-w: 234px;
+    --sidebar-w: 195px;
     --sidebar-bg: #0A0A0C;
     --sidebar-surface: #17171A;
     --sidebar-hover: rgba(255,255,255,0.06);
@@ -105,79 +105,13 @@
     flex-shrink: 0;
     background: var(--sidebar-bg);
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    padding: 16px 0;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 100;
-  }
-
-  .sidebar-rail {
-    width: 52px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 16px 0;
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--sidebar-border);
-    overflow-y: auto;
-  }
-
-  .rail-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    flex-shrink: 0;
-    margin-bottom: 8px;
-  }
-
-  .rail-divider {
-    width: 24px;
-    height: 1px;
-    background: var(--sidebar-border);
-    margin: 4px 0;
-    flex-shrink: 0;
-  }
-
-  .rail-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    border: none;
-    background: none;
-    color: var(--sidebar-text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background .12s, color .12s;
-  }
-
-  .rail-btn:hover { background: var(--sidebar-hover); color: rgba(255,255,255,.85); }
-  .rail-btn.active { background: var(--sidebar-active); color: #fff; }
-
-  .rail-avatar {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-  }
-
-  .sidebar-panel {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 16px 0;
-    overflow: hidden;
   }
 
   .sidebar-brand {
@@ -1359,27 +1293,6 @@
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-rail">
-      <div class="rail-logo">🗂️</div>
-      <button class="rail-btn" type="button" data-target="nav-cadastro" title="Cadastrar Pauta">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <button class="rail-btn active" type="button" data-target="nav-pendentes" title="Pautas">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="10" y1="10" x2="10" y2="20"/></svg>
-      </button>
-      <button class="rail-btn" type="button" data-target="nav-finalizados" title="Finalizados">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </button>
-      <div class="rail-divider"></div>
-      <button class="rail-btn rail-avatar" type="button" data-target="nav-pessoa-solange" title="Solange Vilarino">S</button>
-      <button class="rail-btn rail-avatar" type="button" data-target="nav-pessoa-felipe" title="Felipe Galvão">F</button>
-      <button class="rail-btn rail-avatar" type="button" data-target="nav-pessoa-jean" title="Jean Menezes">J</button>
-      <div class="rail-divider"></div>
-      <button class="rail-btn" type="button" data-target="nav-colaboradores" title="Colaboradores">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-      </button>
-    </div>
-    <div class="sidebar-panel">
     <div class="sidebar-brand">
       <div class="sidebar-logo">🗂️</div>
       <div>
@@ -1413,7 +1326,6 @@
           <span class="theme-switch-handle"></span>
         </button>
       </div>
-    </div>
     </div>
   </aside>
 
@@ -1672,7 +1584,6 @@
   function showScreen(screen) {
     currentScreen = screen;
     navButtons.forEach(btn => btn.classList.toggle('active', btn.id === screen));
-    railButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.target === screen));
 
     const pessoa = currentPessoaFiltro();
     const isColaboradores = screen === 'nav-colaboradores';
@@ -1748,12 +1659,6 @@
       return;
     }
     showScreen(btn.id);
-  }));
-
-  const railButtons = Array.from(document.querySelectorAll('.sidebar-rail .rail-btn'));
-  railButtons.forEach(btn => btn.addEventListener('click', () => {
-    const target = document.getElementById(btn.dataset.target);
-    if (target) target.click();
   }));
 
   const THEME_KEY = 'pautas_theme';
