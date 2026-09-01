@@ -928,6 +928,7 @@
     border-top: 1px solid var(--border);
   }
 
+  .btn-colab-export,
   .btn-colab-edit,
   .btn-colab-delete {
     background: transparent;
@@ -940,6 +941,9 @@
     gap: 6px;
     transition: background .15s ease, color .15s ease;
   }
+
+  .btn-colab-export { color: var(--success); margin-right: auto; }
+  .btn-colab-export:hover { background: var(--success-tint); color: var(--success-hover); }
 
   .btn-colab-edit { color: var(--primary); }
   .btn-colab-edit:hover { background: var(--tint); color: var(--primary-hover); }
@@ -2257,6 +2261,7 @@
           ${atividadesHtml}
           ${promocaoHtml}
           <div class="colab-actions">
+            <button type="button" class="btn-colab-export" data-id="${c.id}">📄 Exportar</button>
             <button type="button" class="btn-colab-edit" data-id="${c.id}">✏️ Editar</button>
             <button type="button" class="btn-colab-delete" data-id="${c.id}">🗑️ Excluir</button>
           </div>
@@ -2348,7 +2353,201 @@
     if (e.target === colabViewOverlay) closeColabView();
   });
 
+  function exportColaboradorReport(c) {
+    const promocaoAtrasada = isPromocaoAtrasada(c);
+    const dataGeracao = new Date().toLocaleString('pt-BR', { dateStyle: 'long', timeStyle: 'short' });
+
+    const promocaoTexto = c.ultimaPromocao
+      ? `${colabFormatDate(c.ultimaPromocao)}${promocaoAtrasada ? ' — mais de 1 ano sem promoção' : ''}`
+      : 'Não informada';
+
+    const win = window.open('', '_blank');
+    if (!win) {
+      alert('Não foi possível abrir a janela de exportação. Verifique o bloqueador de pop-ups do navegador.');
+      return;
+    }
+
+    win.document.write(`<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Relatório — ${escapeHtml(c.nome)}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #16213E;
+    background: #FFFFFF;
+    padding: 48px 56px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid #0F3460;
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+  }
+  header .brand { display: flex; align-items: center; gap: 12px; }
+  header .brand .logo {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: #A9842C; color: #0B1D33;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  header .brand .sysname { font-size: 12px; color: #5B6B82; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+  header h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0F3460;
+    margin: 2px 0 0;
+  }
+  header .data-geracao { font-size: 11px; color: #5B6B82; text-align: right; }
+
+  .colab-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #0F3460; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 700;
+    border: 3px solid #A9842C;
+    flex-shrink: 0;
+  }
+  .colab-header h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 26px;
+    margin: 0 0 4px;
+    color: #16213E;
+  }
+  .colab-header .cargo { font-size: 15px; color: #5B6B82; font-weight: 600; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: #F4F6F9;
+    border-radius: 10px;
+    border: 1px solid #D9DEE5;
+  }
+  .info-grid .field label {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: #5B6B82;
+    margin-bottom: 4px;
+  }
+  .info-grid .field .value {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #16213E;
+  }
+  .info-grid .field .value.atraso { color: #B23A48; }
+
+  section.atividades {
+    margin-bottom: 32px;
+  }
+  section.atividades h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    color: #0F3460;
+    border-bottom: 1px solid #D9DEE5;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  section.atividades p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #16213E;
+    white-space: pre-wrap;
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #D9DEE5;
+    font-size: 10.5px;
+    color: #8A8577;
+    text-align: center;
+  }
+
+  @media print {
+    body { padding: 24px 32px; }
+    @page { margin: 16mm; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">🗂️</div>
+      <div>
+        <div class="sysname">Sistema de Gerenciamento — Estoque</div>
+        <h1>Relatório de Colaborador</h1>
+      </div>
+    </div>
+    <div class="data-geracao">Gerado em<br>${dataGeracao}</div>
+  </header>
+
+  <div class="colab-header">
+    <div class="avatar">${escapeHtml(colabIniciais(c.nome))}</div>
+    <div>
+      <h2>${escapeHtml(c.nome)}</h2>
+      ${c.cargo ? `<div class="cargo">${escapeHtml(c.cargo)}</div>` : ''}
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="field">
+      <label>Função</label>
+      <div class="value">${c.funcao ? escapeHtml(c.funcao) : '—'}</div>
+    </div>
+    <div class="field">
+      <label>Subsetor</label>
+      <div class="value">${c.subsetor ? escapeHtml(c.subsetor) : '—'}</div>
+    </div>
+    <div class="field">
+      <label>Última Promoção</label>
+      <div class="value${promocaoAtrasada ? ' atraso' : ''}">${escapeHtml(promocaoTexto)}</div>
+    </div>
+  </div>
+
+  <section class="atividades">
+    <h3>Atividades Exercidas</h3>
+    <p>${c.atividades ? escapeHtml(c.atividades) : 'Sem atividades registradas.'}</p>
+  </section>
+
+  <footer>Documento gerado automaticamente pelo Sistema de Gerenciamento — Estoque</footer>
+</body>
+</html>`);
+    win.document.close();
+    win.onload = () => {
+      win.focus();
+      win.print();
+    };
+  }
+
   colabGrid.addEventListener('click', async (e) => {
+    const exportBtn = e.target.closest('.btn-colab-export');
+    if (exportBtn) {
+      const colaborador = colaboradoresCache.find(c => c.id === exportBtn.dataset.id);
+      if (colaborador) exportColaboradorReport(colaborador);
+      return;
+    }
+
     const editBtn = e.target.closest('.btn-colab-edit');
     if (editBtn) {
       const colaborador = colaboradoresCache.find(c => c.id === editBtn.dataset.id);
