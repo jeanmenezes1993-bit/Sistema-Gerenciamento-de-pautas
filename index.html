@@ -178,12 +178,12 @@
     padding: 3px 6px;
     border-radius: 999px;
     flex-shrink: 0;
-    animation: navBadgeBlink 1.2s ease-in-out infinite;
+    animation: navBadgeBlink 0.9s ease-in-out infinite;
   }
 
   @keyframes navBadgeBlink {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(178,58,72,0.5); }
-    50% { opacity: 0.55; box-shadow: 0 0 0 4px rgba(178,58,72,0); }
+    0%, 100% { opacity: 1; background: #FF2D40; box-shadow: 0 0 0 0 rgba(255,45,64,0.7), 0 0 10px 1px rgba(255,45,64,0.6); transform: scale(1); }
+    50% { opacity: 0.3; background: var(--danger); box-shadow: 0 0 0 6px rgba(255,45,64,0); transform: scale(0.92); }
   }
 
   @media (prefers-reduced-motion: reduce) {
