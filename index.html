@@ -859,6 +859,16 @@
     background: var(--gold-tint);
   }
 
+  .colab-badge-secundaria {
+    color: var(--success);
+    background: var(--success-tint);
+    cursor: pointer;
+    border: none;
+    transition: filter .15s ease;
+  }
+
+  .colab-badge-secundaria:hover { filter: brightness(0.95); }
+
   .colab-atividades {
     font-size: 13px;
     color: var(--text-muted);
@@ -1528,6 +1538,11 @@
       <textarea id="colab-atividades" placeholder="Principais atividades e responsabilidades..."></textarea>
     </div>
 
+    <div class="field">
+      <label for="colab-atividade-secundaria">Atividade Secundária</label>
+      <textarea id="colab-atividade-secundaria" placeholder="Atividades secundárias ou eventuais (opcional)..."></textarea>
+    </div>
+
     <input type="hidden" id="colab-id">
 
     <div class="modal-actions">
@@ -1563,6 +1578,10 @@
     <div>
       <span class="colab-view-label">Atividades Exercidas</span>
       <p id="colab-view-atividades"></p>
+    </div>
+    <div id="colab-view-secundaria-wrap" style="display:none;">
+      <span class="colab-view-label">Atividade Secundária</span>
+      <p id="colab-view-secundaria"></p>
     </div>
     <div class="modal-actions">
       <button type="button" class="btn-secondary" id="colab-view-close">Fechar</button>
@@ -2129,6 +2148,7 @@
   const colabSubsetorInput = document.getElementById('colab-subsetor');
   const colabPromocaoInput = document.getElementById('colab-promocao');
   const colabAtividadesInput = document.getElementById('colab-atividades');
+  const colabAtividadeSecundariaInput = document.getElementById('colab-atividade-secundaria');
 
   const colabViewOverlay = document.getElementById('colab-view-overlay');
   const colabViewClose = document.getElementById('colab-view-close');
@@ -2141,6 +2161,7 @@
       funcao: row.funcao || '',
       subsetor: row.subsetor || '',
       atividades: row.atividades || '',
+      atividadeSecundaria: row.atividade_secundaria || '',
       ultimaPromocao: row.ultima_promocao,
       promocaoConfirmada: !!row.promocao_confirmada
     };
@@ -2257,6 +2278,7 @@
           <div class="colab-meta">
             ${c.funcao ? `<span class="colab-badge">${escapeHtml(c.funcao)}</span>` : ''}
             ${c.subsetor ? `<span class="colab-badge colab-badge-subsetor">${escapeHtml(c.subsetor)}</span>` : ''}
+            ${c.atividadeSecundaria ? `<span class="colab-badge colab-badge-secundaria" data-id="${c.id}">🔧 Atividade Secundária</span>` : ''}
           </div>
           ${atividadesHtml}
           ${promocaoHtml}
@@ -2281,6 +2303,7 @@
       colabSubsetorInput.value = colaborador.subsetor;
       colabPromocaoInput.value = colaborador.ultimaPromocao || '';
       colabAtividadesInput.value = colaborador.atividades;
+      colabAtividadeSecundariaInput.value = colaborador.atividadeSecundaria;
     } else {
       colabFormTitle.textContent = 'Novo Colaborador';
       colabIdInput.value = '';
@@ -2310,6 +2333,7 @@
       funcao: colabFuncaoInput.value.trim(),
       subsetor: colabSubsetorInput.value.trim(),
       atividades: colabAtividadesInput.value.trim(),
+      atividade_secundaria: colabAtividadeSecundariaInput.value.trim(),
       ultima_promocao: colabPromocaoInput.value || null
     };
 
@@ -2341,6 +2365,13 @@
     document.getElementById('colab-view-subsetor').textContent = colaborador.subsetor || '—';
     document.getElementById('colab-view-promocao').textContent = colaborador.ultimaPromocao ? colabFormatDate(colaborador.ultimaPromocao) : '—';
     document.getElementById('colab-view-atividades').textContent = colaborador.atividades || 'Sem atividades registradas.';
+    const secundariaWrap = document.getElementById('colab-view-secundaria-wrap');
+    if (colaborador.atividadeSecundaria) {
+      document.getElementById('colab-view-secundaria').textContent = colaborador.atividadeSecundaria;
+      secundariaWrap.style.display = '';
+    } else {
+      secundariaWrap.style.display = 'none';
+    }
     colabViewOverlay.classList.add('open');
   }
 
@@ -2520,6 +2551,11 @@
     <h3>Atividades Exercidas</h3>
     <p>${c.atividades ? escapeHtml(c.atividades) : 'Sem atividades registradas.'}</p>
   </section>
+  ${c.atividadeSecundaria ? `
+  <section class="atividades">
+    <h3>Atividade Secundária</h3>
+    <p>${escapeHtml(c.atividadeSecundaria)}</p>
+  </section>` : ''}
 </body>
 </html>`);
     win.document.close();
