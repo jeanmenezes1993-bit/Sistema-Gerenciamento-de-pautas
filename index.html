@@ -870,14 +870,16 @@
   .colab-badge-secundaria:hover { filter: brightness(0.95); }
 
   .colab-atividades {
+    margin: 0;
+    padding-left: 16px;
     font-size: 13px;
     color: var(--text-muted);
     line-height: 1.5;
-    white-space: pre-wrap;
     word-break: break-word;
   }
 
-  .colab-atividades.empty { font-style: italic; opacity: .75; }
+  .colab-atividades li { margin-bottom: 3px; }
+  .colab-atividades.empty { list-style: none; padding-left: 0; font-style: italic; opacity: .75; }
 
   .colab-promocao {
     display: inline-flex;
@@ -2277,8 +2279,8 @@
         : '';
 
       const atividadesHtml = c.atividades
-        ? `<div class="colab-atividades">${escapeHtml(c.atividades)}</div>`
-        : `<div class="colab-atividades empty">Sem atividades registradas.</div>`;
+        ? `<ul class="colab-atividades">${atividadesToListHtml(c.atividades, '')}</ul>`
+        : `<ul class="colab-atividades empty"><li>Sem atividades registradas.</li></ul>`;
 
       return `
         <div class="colab-card${promocaoAtrasada ? ' promocao-atrasada' : ''}" data-id="${c.id}">
@@ -2505,12 +2507,15 @@
     padding-bottom: 8px;
     margin-bottom: 12px;
   }
-  section.atividades p {
+  .atividades-list {
+    margin: 0;
+    padding-left: 20px;
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.6;
     color: #16213E;
-    white-space: pre-wrap;
   }
+  .atividades-list li { margin-bottom: 6px; }
+  .atividades-list li.empty { list-style: none; margin-left: -20px; color: #8A8577; font-style: italic; }
 
   @media print {
     body { padding: 24px 32px; }
@@ -2544,12 +2549,12 @@
 
   <section class="atividades">
     <h3>Atividades Exercidas</h3>
-    <p>${c.atividades ? escapeHtml(c.atividades) : 'Sem atividades registradas.'}</p>
+    <ul class="atividades-list">${atividadesToListHtml(c.atividades, 'Sem atividades registradas.')}</ul>
   </section>
   ${c.atividadeSecundaria ? `
   <section class="atividades">
     <h3>Atividade Secundária</h3>
-    <p>${escapeHtml(c.atividadeSecundaria)}</p>
+    <ul class="atividades-list">${atividadesToListHtml(c.atividadeSecundaria, '')}</ul>
   </section>` : ''}
 </body>
 </html>`);
