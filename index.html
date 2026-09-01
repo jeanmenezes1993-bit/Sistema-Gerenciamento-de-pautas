@@ -2517,6 +2517,17 @@
   .atividades-list li { margin-bottom: 6px; }
   .atividades-list li.empty { list-style: none; margin-left: -20px; color: #8A8577; font-style: italic; }
 
+  .brand-footer {
+    position: fixed;
+    bottom: 22px;
+    right: 32px;
+    font-size: 13px;
+    letter-spacing: .06em;
+    color: #16213E;
+  }
+  .brand-footer .vx { font-weight: 800; }
+  .brand-footer .case { font-weight: 300; }
+
   @media print {
     body { padding: 24px 32px; }
     @page { margin: 16mm; }
@@ -2524,6 +2535,7 @@
 </style>
 </head>
 <body>
+  <div class="brand-footer"><span class="vx">VX</span> <span class="case">CASE</span></div>
   <div class="colab-header">
     <div class="avatar">${escapeHtml(colabIniciais(c.nome))}</div>
     <div>
