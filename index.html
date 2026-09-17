@@ -2329,7 +2329,10 @@
   colabNewBtn.addEventListener('click', () => openColabForm(null));
   colabFormCancel.addEventListener('click', closeColabForm);
   colabFormOverlay.addEventListener('click', (e) => {
-    if (e.target === colabFormOverlay) closeColabForm();
+    if (e.target !== colabFormOverlay) return;
+    if (confirm('Deseja realmente fechar? As informações preenchidas serão perdidas.')) {
+      closeColabForm();
+    }
   });
 
   colabForm.addEventListener('submit', async (e) => {
