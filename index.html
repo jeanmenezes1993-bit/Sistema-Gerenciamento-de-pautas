@@ -1401,8 +1401,8 @@
       <select id="colab-filter-cargo"><option value="">Todos os cargos</option></select>
       <select id="colab-filter-funcao"><option value="">Todas as funções</option></select>
       <select id="colab-sort">
-        <option value="nome">Ordenar por nome</option>
         <option value="cargo">Ordenar por cargo</option>
+        <option value="nome">Ordenar por nome</option>
         <option value="subsetor">Ordenar por subsetor</option>
       </select>
       <button type="button" class="btn-primary" id="colab-new-btn">＋ Novo Colaborador</button>
@@ -2161,6 +2161,26 @@
     build(colabFilterFuncao, colaboradoresCache.map(c => c.funcao), 'Todas as funções');
   }
 
+  // Hierarquia: Gerente > Supervisor 3/2/1 > Estoquista 3/2/1 > Auxiliar de estoque 3/2/1.
+  // Reconhece variações como "Supervisor de Estoque 2" pela função + nível; o que não estiver na lista vai para o fim.
+  const CARGO_FAMILIAS = [
+    { chave: 'gerente', base: 0, niveis: 1 },
+    { chave: 'supervisor', base: 1, niveis: 3 },
+    { chave: 'estoquista', base: 4, niveis: 3 },
+    { chave: 'auxiliar', base: 7, niveis: 3 }
+  ];
+  const CARGO_FIM = 10;
+
+  function cargoRank(cargo) {
+    const texto = (cargo || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+    const familia = CARGO_FAMILIAS.find(f => texto.includes(f.chave));
+    if (!familia) return CARGO_FIM;
+    if (familia.niveis === 1) return familia.base;
+    const nivel = parseInt((texto.match(/(\d+)\s*$/) || [])[1], 10);
+    if (!nivel || nivel > familia.niveis) return familia.base + familia.niveis;
+    return familia.base + (familia.niveis - nivel);
+  }
+
   function renderColaboradores() {
     populateColabFilters();
 
@@ -2178,7 +2198,12 @@
       return true;
     });
 
-    visiveis = [...visiveis].sort((a, b) => (a[ordenarPor] || '').localeCompare(b[ordenarPor] || ''));
+    const porNome = (a, b) => (a.nome || '').localeCompare(b.nome || '');
+    if (ordenarPor === 'cargo') {
+      visiveis = [...visiveis].sort((a, b) => (cargoRank(a.cargo) - cargoRank(b.cargo)) || porNome(a, b));
+    } else {
+      visiveis = [...visiveis].sort((a, b) => (a[ordenarPor] || '').localeCompare(b[ordenarPor] || '') || porNome(a, b));
+    }
 
     if (visiveis.length === 0) {
       colabGrid.innerHTML = `
