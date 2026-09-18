@@ -906,18 +906,6 @@
     background: var(--danger-tint);
   }
 
-  .btn-colab-ok {
-    background: var(--danger);
-    color: #fff;
-    font-size: 11.5px;
-    font-weight: 700;
-    padding: 5px 10px;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-
-  .btn-colab-ok:hover { background: var(--danger-hover); }
-
   @keyframes colab-blink-red {
     0%, 100% { box-shadow: 0 0 0 2px var(--danger); }
     50% { box-shadow: 0 0 0 2px transparent; }
@@ -2267,7 +2255,6 @@
         ? promocaoAtrasada
           ? `<div class="colab-promocao-row">
                <span class="colab-promocao colab-promocao-atrasada">⚠️ Mais de 1 ano sem promoção (${colabFormatDate(c.ultimaPromocao)})</span>
-               <button type="button" class="btn-colab-ok" data-id="${c.id}">OK</button>
              </div>`
           : `<span class="colab-promocao">🏅 Última promoção: ${colabFormatDate(c.ultimaPromocao)}</span>`
         : '';
@@ -2598,17 +2585,6 @@
         if (error) console.error('Erro ao excluir colaborador', error);
         else await fetchColaboradores();
       }
-      return;
-    }
-
-    const okBtn = e.target.closest('.btn-colab-ok');
-    if (okBtn) {
-      const { error } = await supabaseClient
-        .from('colaboradores')
-        .update({ promocao_confirmada: true })
-        .eq('id', okBtn.dataset.id);
-      if (error) console.error('Erro ao confirmar alerta de promoção', error);
-      else await fetchColaboradores();
       return;
     }
 
