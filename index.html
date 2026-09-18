@@ -6,7 +6,7 @@
 <title>Gerenciador de Pautas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23000'/%3E%3Cg stroke='%23fff' stroke-width='3' stroke-linecap='round' fill='none'%3E%3Cline x1='28' y1='40' x2='20' y2='40'/%3E%3Cline x1='30.95' y1='29' x2='24.02' y2='25'/%3E%3Cline x1='39' y1='20.95' x2='35' y2='14.02'/%3E%3Cline x1='50' y1='18' x2='50' y2='10'/%3E%3Cline x1='61' y1='20.95' x2='65' y2='14.02'/%3E%3Cline x1='69.05' y1='29' x2='75.98' y2='25'/%3E%3Cline x1='72' y1='40' x2='80' y2='40'/%3E%3C/g%3E%3Cpath d='M34,38 C34,24 66,24 66,38 C66,48 58,50 56,56 L44,56 C42,50 34,48 34,38 Z' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Crect x='43' y='56' width='14' height='14' rx='2' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3Cline x1='43' y1='61' x2='57' y2='61' stroke='%23fff' stroke-width='2'/%3E%3Cline x1='43' y1='66' x2='57' y2='66' stroke='%23fff' stroke-width='2'/%3E%3Cpath d='M50,28 C46,31 46,35 50,37 C54,39 54,43 50,46' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M40,30 C38,33 40,36 38,39 C36,42 39,44 37,47' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M60,30 C62,33 60,36 62,39 C64,42 61,44 63,47' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1112,152 +1112,113 @@
 
   /* ---- Área Restrita: pop-up futurista ---- */
   .lock-overlay {
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(3px);
+    background: #000000;
+    padding: 24px;
   }
 
   .lock-card {
-    position: relative;
-    max-width: 360px;
-    background: #000000;
-    border: 1px solid rgba(34,197,94,0.35);
-    border-radius: 14px;
-    padding: 30px 26px 24px;
-    overflow: hidden;
+    width: 100%;
+    max-width: 300px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
     text-align: center;
-    box-shadow:
-      0 0 0 1px rgba(34,197,94,0.08),
-      0 20px 50px rgba(0,0,0,0.55),
-      0 0 26px rgba(34,197,94,0.18);
-    animation: lockGlow 1.6s ease-in-out infinite;
-  }
-
-  @keyframes lockGlow {
-    0%, 100% {
-      border-color: rgba(34,197,94,0.3);
-      box-shadow: 0 0 0 1px rgba(34,197,94,0.06), 0 20px 50px rgba(0,0,0,0.55), 0 0 14px rgba(34,197,94,0.12);
-    }
-    50% {
-      border-color: rgba(74,222,128,0.85);
-      box-shadow: 0 0 0 1px rgba(74,222,128,0.2), 0 20px 50px rgba(0,0,0,0.55), 0 0 36px rgba(74,222,128,0.45);
-    }
-  }
-
-  .lock-scanline {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(180deg, rgba(34,197,94,0) 0%, rgba(34,197,94,0.10) 50%, rgba(34,197,94,0) 100%);
-    animation: lockScan 3.2s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes lockScan {
-    0% { top: -40%; }
-    100% { top: 100%; }
+    font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
   }
 
   .lock-icon {
-    width: 68px;
-    height: 68px;
-    margin: 0 auto 22px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    animation: lockIconPulse 1.6s ease-in-out infinite;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 14px;
   }
 
-  .lock-icon svg { width: 100%; height: 100%; border-radius: 50%; }
-
-  @keyframes lockIconPulse {
-    0%, 100% { filter: drop-shadow(0 0 6px rgba(34,197,94,0.35)); }
-    50% { filter: drop-shadow(0 0 16px rgba(74,222,128,0.75)); }
+  .lock-card .lock-title {
+    margin: 0 0 34px;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: .14em;
+    color: rgba(255,255,255,0.9);
   }
 
   .lock-field-row {
     position: relative;
-    margin-bottom: 12px;
+    margin-bottom: 22px;
     text-align: left;
+    border-bottom: 1.5px solid rgba(255,255,255,0.55);
+    transition: border-color .15s;
   }
+
+  .lock-field-row:focus-within { border-bottom-color: #FFFFFF; }
 
   .lock-field-row svg {
     position: absolute;
-    left: 14px;
+    left: 2px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.75);
     pointer-events: none;
   }
 
   .lock-field-row input {
     width: 100%;
-    background: rgba(255,255,255,0.045);
-    border: 1px solid rgba(255,255,255,0.09);
-    color: #F2F5F7;
-    padding: 12px 14px 12px 40px;
-    border-radius: 10px;
-    font-size: 13.5px;
-    letter-spacing: .04em;
-    transition: border-color .15s, box-shadow .15s;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #FFFFFF;
+    padding: 9px 4px 9px 32px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: .05em;
+    box-shadow: none;
   }
 
-  .lock-field-row input::placeholder { color: rgba(255,255,255,0.35); letter-spacing: normal; }
-
-  .lock-field-row input:focus {
-    outline: none;
-    border-color: #22C55E;
-    box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
-  }
+  .lock-field-row input::placeholder { color: rgba(255,255,255,0.55); letter-spacing: .05em; }
+  .lock-field-row input:focus { outline: none; box-shadow: none; background: transparent; }
 
   .lock-login-btn {
     width: 100%;
-    margin-top: 14px;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: rgba(235,238,241,0.88);
-    color: #0A0A0C;
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: .14em;
+    margin-top: 18px;
+    padding: 13px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 2px;
+    background: #161616;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .16em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background .15s, box-shadow .15s, transform .1s;
+    transition: background .15s, border-color .15s;
   }
 
-  .lock-login-btn:hover {
-    background: #FFFFFF;
-    box-shadow: 0 0 18px rgba(34,197,94,0.4);
-    transform: translateY(-1px);
-  }
+  .lock-login-btn:hover { background: #262626; border-color: #FFFFFF; }
 
   .lock-cancel-link {
     display: block;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 16px;
     background: none;
     border: none;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.45);
+    font-family: inherit;
     font-size: 12px;
     cursor: pointer;
     transition: color .15s;
   }
 
-  .lock-cancel-link:hover { color: rgba(255,255,255,0.7); }
+  .lock-cancel-link:hover { color: rgba(255,255,255,0.8); }
 
   .lock-card .login-error {
-    background: rgba(244,63,94,0.10);
-    border: 1px solid rgba(244,63,94,0.35);
-    color: #FCA5B1;
+    background: none;
+    border: none;
+    color: #F87171;
     font-size: 12px;
-    margin-top: 4px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .lock-card, .lock-scanline, .lock-icon {
-      animation: none !important;
-    }
+    margin: -6px 0 6px;
+    padding: 0;
   }
   /* ---- fim Área Restrita ---- */
 
@@ -1467,28 +1428,10 @@
 
 <div class="modal-overlay lock-overlay" id="pessoa-lock-overlay">
   <form class="modal-card lock-card" id="pessoa-lock-form">
-    <div class="lock-scanline"></div>
     <div class="lock-icon">
-      <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="50" fill="#000"/>
-        <g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none">
-          <line x1="28" y1="40" x2="20" y2="40"/>
-          <line x1="30.95" y1="29" x2="24.02" y2="25"/>
-          <line x1="39" y1="20.95" x2="35" y2="14.02"/>
-          <line x1="50" y1="18" x2="50" y2="10"/>
-          <line x1="61" y1="20.95" x2="65" y2="14.02"/>
-          <line x1="69.05" y1="29" x2="75.98" y2="25"/>
-          <line x1="72" y1="40" x2="80" y2="40"/>
-        </g>
-        <path d="M34,38 C34,24 66,24 66,38 C66,48 58,50 56,56 L44,56 C42,50 34,48 34,38 Z" fill="none" stroke="#fff" stroke-width="3"/>
-        <rect x="43" y="56" width="14" height="14" rx="2" fill="none" stroke="#fff" stroke-width="2.5"/>
-        <line x1="43" y1="61" x2="57" y2="61" stroke="#fff" stroke-width="2"/>
-        <line x1="43" y1="66" x2="57" y2="66" stroke="#fff" stroke-width="2"/>
-        <path d="M50,28 C46,31 46,35 50,37 C54,39 54,43 50,46" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M40,30 C38,33 40,36 38,39 C36,42 39,44 37,47" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
-        <path d="M60,30 C62,33 60,36 62,39 C64,42 61,44 63,47" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
-      </svg>
+      <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" style="position:static;transform:none;"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c0-4.1 3.4-7.2 7.5-7.2s7.5 3.1 7.5 7.2"/></svg>
     </div>
+    <h3 class="lock-title">Área Restrita</h3>
     <div class="lock-field-row">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <input type="text" id="pessoa-lock-user" placeholder="Usuário" autocomplete="off">
