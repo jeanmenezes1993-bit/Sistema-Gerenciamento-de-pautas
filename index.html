@@ -744,6 +744,10 @@
     color: var(--text-muted);
   }
 
+  /* O título fica direto sobre o fundo da página (fora dos cards claros), então precisa acompanhar o tema escuro */
+  :root[data-theme="dark"] .colab-module > .colab-header h2 { color: var(--title-color); }
+  :root[data-theme="dark"] .colab-module > .colab-header p { color: #A7B1C4; }
+
   .colab-toolbar {
     display: flex;
     flex-wrap: wrap;
