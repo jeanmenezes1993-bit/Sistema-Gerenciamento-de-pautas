@@ -2699,18 +2699,22 @@
   const epiItensList = document.getElementById('epi-itens-list');
 
   // Cada EPI tem seu emoji; "chaves" reconhece variações digitadas (botina, camiseta, etc.)
+  // sugerir:false = não aparece na lista de sugestões, mas registros antigos mantêm o emoji
   const EPI_CATALOGO = [
     { nome: 'Fardamento', emoji: '👕', chaves: ['fardamento', 'uniforme', 'camisa', 'camiseta'] },
     { nome: 'Bota', emoji: '🥾', chaves: ['bota', 'botina'] },
     { nome: 'Luvas', emoji: '🧤', chaves: ['luva'] },
-    { nome: 'Capacete', emoji: '⛑️', chaves: ['capacete'] },
-    { nome: 'Óculos de proteção', emoji: '🥽', chaves: ['oculos'] },
-    { nome: 'Protetor auricular', emoji: '🎧', chaves: ['protetor auricular', 'auricular', 'abafador'] },
-    { nome: 'Colete', emoji: '🦺', chaves: ['colete'] },
+    { nome: 'Capacete', emoji: '⛑️', chaves: ['capacete'], sugerir: false },
+    { nome: 'Óculos de proteção', emoji: '🥽', chaves: ['oculos'], sugerir: false },
+    { nome: 'Protetor auricular', emoji: '🎧', chaves: ['protetor auricular', 'auricular', 'abafador'], sugerir: false },
+    { nome: 'Colete', emoji: '🦺', chaves: ['colete'], sugerir: false },
     { nome: 'Máscara', emoji: '😷', chaves: ['mascara'] },
     { nome: 'Calça', emoji: '👖', chaves: ['calca'] },
     { nome: 'Boné', emoji: '🧢', chaves: ['bone'] },
-    { nome: 'Jaleco', emoji: '🥼', chaves: ['jaleco'] }
+    { nome: 'Jaleco', emoji: '🥼', chaves: ['jaleco'] },
+    { nome: 'Caneta', emoji: '🖊️', chaves: ['caneta'] },
+    { nome: 'Piloto', emoji: '🖍️', chaves: ['piloto', 'marca texto', 'marca-texto'] },
+    { nome: 'Prancheta', emoji: '📋', chaves: ['prancheta'] }
   ];
   const EPI_EMOJI_PADRAO = '🦺';
 
@@ -2759,7 +2763,11 @@
     const nomes = [...new Set(colaboradoresCache.map(c => c.nome))].sort((a, b) => a.localeCompare(b));
     epiColaboradoresList.innerHTML = nomes.map(n => '<option value="' + escapeHtml(n) + '"></option>').join('');
 
-    const itens = [...new Set([...EPI_CATALOGO.map(i => i.nome), ...entregasCache.map(e => e.epi)])];
+    const ocultos = EPI_CATALOGO.filter(i => i.sugerir === false).map(i => epiSemAcento(i.nome));
+    const itens = [...new Set([
+      ...EPI_CATALOGO.filter(i => i.sugerir !== false).map(i => i.nome),
+      ...entregasCache.map(e => e.epi).filter(n => !ocultos.includes(epiSemAcento(n)))
+    ])];
     epiItensList.innerHTML = itens.map(i => '<option value="' + escapeHtml(epiEmoji(i) + ' ' + i) + '"></option>').join('');
 
     if (entregasErro) {
