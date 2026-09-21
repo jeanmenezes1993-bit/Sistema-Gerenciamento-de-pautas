@@ -2112,6 +2112,20 @@
     };
   }
 
+  function tempoSemPromocao(dataIso) {
+    const [ano, mes, dia] = dataIso.split('-').map(Number);
+    const hoje = new Date();
+    let meses = (hoje.getFullYear() - ano) * 12 + (hoje.getMonth() + 1 - mes);
+    if (hoje.getDate() < dia) meses -= 1;
+    meses = Math.max(meses, 0);
+    const anos = Math.floor(meses / 12);
+    const resto = meses % 12;
+    const partes = [];
+    if (anos > 0) partes.push(`${anos} ${anos === 1 ? 'ano' : 'anos'}`);
+    if (resto > 0) partes.push(`${resto} ${resto === 1 ? 'mês' : 'meses'}`);
+    return partes.length ? partes.join(' e ') : 'menos de 1 mês';
+  }
+
   function isPromocaoAtrasada(c) {
     if (!c.ultimaPromocao || c.promocaoConfirmada) return false;
     const umAnoMs = 365 * 24 * 60 * 60 * 1000;
@@ -2226,7 +2240,7 @@
       const promocaoHtml = c.ultimaPromocao
         ? promocaoAtrasada
           ? `<div class="colab-promocao-row">
-               <span class="colab-promocao colab-promocao-atrasada">⚠️ Mais de 1 ano sem promoção (${colabFormatDate(c.ultimaPromocao)})</span>
+               <span class="colab-promocao colab-promocao-atrasada">⚠️ ${tempoSemPromocao(c.ultimaPromocao)} sem promoção (${colabFormatDate(c.ultimaPromocao)})</span>
              </div>`
           : `<span class="colab-promocao">🏅 Última promoção: ${colabFormatDate(c.ultimaPromocao)}</span>`
         : '';
@@ -2378,7 +2392,7 @@
     const dataGeracao = new Date().toLocaleString('pt-BR', { dateStyle: 'long', timeStyle: 'short' });
 
     const promocaoTexto = c.ultimaPromocao
-      ? `${colabFormatDate(c.ultimaPromocao)}${promocaoAtrasada ? ' — mais de 1 ano sem promoção' : ''}`
+      ? `${colabFormatDate(c.ultimaPromocao)}${promocaoAtrasada ? ` — ${tempoSemPromocao(c.ultimaPromocao)} sem promoção` : ''}`
       : 'Não informada';
 
     const win = window.open('', '_blank');
