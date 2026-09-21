@@ -1005,7 +1005,9 @@
     border-top: 1px solid var(--border);
   }
 
-  .epi-item-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .epi-item-row { display: flex; align-items: center; gap: 8px; }
+  .epi-item-row .colab-badge { white-space: nowrap; }
+  .epi-item-row .colab-badge-subsetor { white-space: normal; min-width: 0; }
 
   .epi-item-del {
     margin-left: auto;
@@ -1476,7 +1478,7 @@
       </div>
       <div class="field">
         <label for="epi-item">EPI entregue</label>
-        <input type="text" id="epi-item" list="epi-itens-list" placeholder="Ex: Bota, Fardamento" autocomplete="off" required>
+        <input type="text" id="epi-item" list="epi-itens-list" placeholder="Ex: 🥾 Bota, 👕 Fardamento" autocomplete="off" required>
         <datalist id="epi-itens-list"></datalist>
       </div>
       <button type="submit" class="btn-primary">＋ Cadastrar</button>
@@ -2696,7 +2698,35 @@
   const epiColaboradoresList = document.getElementById('epi-colaboradores-list');
   const epiItensList = document.getElementById('epi-itens-list');
 
-  const EPI_SUGESTOES = ['Fardamento', 'Bota', 'Luvas', 'Capacete', 'Óculos de proteção', 'Protetor auricular', 'Colete'];
+  // Cada EPI tem seu emoji; "chaves" reconhece variações digitadas (botina, camiseta, etc.)
+  const EPI_CATALOGO = [
+    { nome: 'Fardamento', emoji: '👕', chaves: ['fardamento', 'uniforme', 'camisa', 'camiseta'] },
+    { nome: 'Bota', emoji: '🥾', chaves: ['bota', 'botina'] },
+    { nome: 'Luvas', emoji: '🧤', chaves: ['luva'] },
+    { nome: 'Capacete', emoji: '⛑️', chaves: ['capacete'] },
+    { nome: 'Óculos de proteção', emoji: '🥽', chaves: ['oculos'] },
+    { nome: 'Protetor auricular', emoji: '🎧', chaves: ['protetor auricular', 'auricular', 'abafador'] },
+    { nome: 'Colete', emoji: '🦺', chaves: ['colete'] },
+    { nome: 'Máscara', emoji: '😷', chaves: ['mascara'] },
+    { nome: 'Calça', emoji: '👖', chaves: ['calca'] },
+    { nome: 'Boné', emoji: '🧢', chaves: ['bone'] },
+    { nome: 'Jaleco', emoji: '🥼', chaves: ['jaleco'] }
+  ];
+  const EPI_EMOJI_PADRAO = '🦺';
+
+  function epiSemAcento(texto) {
+    return texto.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+  }
+
+  function epiEmoji(nome) {
+    const t = epiSemAcento(nome);
+    const item = EPI_CATALOGO.find(i => i.chaves.some(c => t.includes(c)));
+    return item ? item.emoji : EPI_EMOJI_PADRAO;
+  }
+
+  function epiSemEmoji(texto) {
+    return texto.replace(/^[\p{Extended_Pictographic}\uFE0F\u200D]+\s*/u, '').trim();
+  }
 
   let entregasCache = [];
   let entregasErro = false;
@@ -2729,8 +2759,8 @@
     const nomes = [...new Set(colaboradoresCache.map(c => c.nome))].sort((a, b) => a.localeCompare(b));
     epiColaboradoresList.innerHTML = nomes.map(n => '<option value="' + escapeHtml(n) + '"></option>').join('');
 
-    const itens = [...new Set([...EPI_SUGESTOES, ...entregasCache.map(e => e.epi)])];
-    epiItensList.innerHTML = itens.map(i => '<option value="' + escapeHtml(i) + '"></option>').join('');
+    const itens = [...new Set([...EPI_CATALOGO.map(i => i.nome), ...entregasCache.map(e => e.epi)])];
+    epiItensList.innerHTML = itens.map(i => '<option value="' + escapeHtml(epiEmoji(i) + ' ' + i) + '"></option>').join('');
 
     if (entregasErro) {
       epiGrid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Erro ao carregar os dados</h3><p>Verifique sua conexão e se a tabela de entregas foi criada no banco.</p></div>';
@@ -2767,7 +2797,7 @@
           g.entregas.map(e =>
             '<div class="epi-item-row">' +
               '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
-              '<span class="colab-badge colab-badge-subsetor">🦺 ' + escapeHtml(e.epi) + '</span>' +
+              '<span class="colab-badge colab-badge-subsetor">' + epiEmoji(e.epi) + ' ' + escapeHtml(e.epi) + '</span>' +
               '<button type="button" class="epi-item-del btn-epi-delete" data-id="' + e.id + '" title="Excluir esta entrega">🗑️</button>' +
             '</div>'
           ).join('') +
@@ -2779,7 +2809,7 @@
   epiForm.addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const colaborador = epiColaboradorInput.value.trim();
-    const epi = epiItemInput.value.trim();
+    const epi = epiSemEmoji(epiItemInput.value.trim());
     if (!colaborador || !epi) return;
 
     const { error } = await supabaseClient.from('entregas_epi').insert({
