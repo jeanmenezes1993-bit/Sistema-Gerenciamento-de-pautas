@@ -997,7 +997,29 @@
 
   .epi-card { cursor: default; }
   .epi-card:hover { transform: none; border-color: var(--border); box-shadow: var(--shadow); }
-  .epi-card .colab-actions { justify-content: flex-end; margin-top: auto; }
+  .epi-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .epi-item-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .epi-item-del {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    opacity: .7;
+    transition: background .15s ease, opacity .15s ease;
+  }
+
+  .epi-item-del:hover { background: var(--danger-tint); opacity: 1; }
 
   .colab-modal-card { max-width: 520px; }
 
@@ -2725,18 +2747,30 @@
       return;
     }
 
-    epiGrid.innerHTML = visiveis.map(e =>
+    // Um cartão por colaborador: todas as entregas dele ficam juntas (mais recentes primeiro)
+    const chave = nome => nome.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const oficiais = new Map(colaboradoresCache.map(c => [chave(c.nome), c.nome]));
+    const grupos = new Map();
+    visiveis.forEach(e => {
+      const k = chave(e.colaborador);
+      if (!grupos.has(k)) grupos.set(k, { nome: oficiais.get(k) || e.colaborador, entregas: [] });
+      grupos.get(k).entregas.push(e);
+    });
+
+    epiGrid.innerHTML = [...grupos.values()].map(g =>
       '<div class="colab-card epi-card">' +
         '<div class="colab-card-header">' +
-          '<div class="colab-avatar">' + escapeHtml(colabIniciais(e.colaborador)) + '</div>' +
-          '<div><div class="colab-name">' + escapeHtml(e.colaborador) + '</div></div>' +
+          '<div class="colab-avatar">' + escapeHtml(colabIniciais(g.nome)) + '</div>' +
+          '<div><div class="colab-name">' + escapeHtml(g.nome) + '</div></div>' +
         '</div>' +
-        '<div class="colab-meta">' +
-          '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
-          '<span class="colab-badge colab-badge-subsetor">🦺 ' + escapeHtml(e.epi) + '</span>' +
-        '</div>' +
-        '<div class="colab-actions">' +
-          '<button type="button" class="btn-colab-delete btn-epi-delete" data-id="' + e.id + '">🗑️ Excluir</button>' +
+        '<div class="epi-items">' +
+          g.entregas.map(e =>
+            '<div class="epi-item-row">' +
+              '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
+              '<span class="colab-badge colab-badge-subsetor">🦺 ' + escapeHtml(e.epi) + '</span>' +
+              '<button type="button" class="epi-item-del btn-epi-delete" data-id="' + e.id + '" title="Excluir esta entrega">🗑️</button>' +
+            '</div>'
+          ).join('') +
         '</div>' +
       '</div>'
     ).join('');
