@@ -957,6 +957,48 @@
 
   .colab-field-row { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
 
+  /* ---- Fardamento e EPI ---- */
+  .epi-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .epi-form .field { flex: 1 1 200px; min-width: 160px; }
+  .epi-form .field.epi-data { flex: 0 1 170px; min-width: 150px; }
+  .epi-form .btn-primary { white-space: nowrap; }
+
+  .epi-form input[type="date"] {
+    width: 100%;
+    height: 41px;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text);
+  }
+
+  #epi-search { flex: 1 1 220px; min-width: 180px; }
+
+  .epi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .epi-card { cursor: default; }
+  .epi-card:hover { transform: none; border-color: var(--border); box-shadow: var(--shadow); }
+  .epi-card .colab-actions { justify-content: flex-end; margin-top: auto; }
+
   .colab-modal-card { max-width: 520px; }
 
   .colab-view-card { max-width: 480px; display: flex; flex-direction: column; gap: 16px; }
@@ -1309,6 +1351,7 @@
       <button class="nav-btn" id="nav-pessoa-felipe" type="button" data-pessoa="Felipe Galvão" data-group="pessoas"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Felipe Galvão <span class="nav-badge" id="badge-pessoa-felipe" style="display:none;"></span></button>
       <button class="nav-btn" id="nav-pessoa-jean" type="button" data-pessoa="Jean Menezes" data-group="pessoas"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Jean Menezes <span class="nav-badge" id="badge-pessoa-jean" style="display:none;"></span></button>
       <div class="nav-section-label" data-group="administracao">Administração</div>
+      <button class="nav-btn" id="nav-epi" type="button" data-group="administracao"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg> Fardamento e EPI</button>
       <button class="nav-btn" id="nav-colaboradores" type="button" data-group="administracao"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Colaboradores</button>
     </nav>
     <div class="sidebar-footer">
@@ -1391,6 +1434,37 @@
       <span class="count-badge" id="count-badge">0</span>
     </h2>
     <div class="cards-grid" id="cards-grid"></div>
+  </section>
+
+  <section id="epi-section" class="colab-module" style="display:none;">
+    <div class="colab-header">
+      <h2>Fardamento e EPI</h2>
+      <p>Registro de quem recebeu fardamento, bota e outros EPIs</p>
+    </div>
+
+    <form class="epi-form" id="epi-form">
+      <div class="field epi-data">
+        <label for="epi-data">Data</label>
+        <input type="date" id="epi-data" required>
+      </div>
+      <div class="field">
+        <label for="epi-colaborador">Colaborador</label>
+        <input type="text" id="epi-colaborador" list="epi-colaboradores-list" placeholder="Nome do colaborador" autocomplete="off" required>
+        <datalist id="epi-colaboradores-list"></datalist>
+      </div>
+      <div class="field">
+        <label for="epi-item">EPI entregue</label>
+        <input type="text" id="epi-item" list="epi-itens-list" placeholder="Ex: Bota, Fardamento" autocomplete="off" required>
+        <datalist id="epi-itens-list"></datalist>
+      </div>
+      <button type="submit" class="btn-primary">＋ Cadastrar</button>
+    </form>
+
+    <div class="colab-toolbar">
+      <input type="text" id="epi-search" placeholder="🔍 Pesquisar por colaborador ou EPI...">
+    </div>
+
+    <div class="epi-grid" id="epi-grid"></div>
   </section>
 
   <section id="colaboradores-section" class="colab-module" style="display:none;">
@@ -1571,17 +1645,20 @@
 
     const pessoa = currentPessoaFiltro();
     const isColaboradores = screen === 'nav-colaboradores';
+    const isEpi = screen === 'nav-epi';
 
     formSection.style.display = screen === 'nav-cadastro' ? '' : 'none';
-    cardsSection.style.display = (screen === 'nav-cadastro' || isColaboradores) ? 'none' : '';
+    cardsSection.style.display = (screen === 'nav-cadastro' || isColaboradores || isEpi) ? 'none' : '';
     colaboradoresSection.style.display = isColaboradores ? '' : 'none';
+    document.getElementById('epi-section').style.display = isEpi ? '' : 'none';
 
     if (screen === 'nav-pendentes') sectionTitleText.textContent = 'Pautas Cadastradas';
     else if (screen === 'nav-finalizados') sectionTitleText.textContent = 'Pautas Finalizadas';
     else if (pessoa) sectionTitleText.textContent = `Pautas de ${pessoa}`;
 
     closeSidebar();
-    if (isColaboradores) renderColaboradores();
+    if (isEpi) renderEpi();
+    else if (isColaboradores) renderColaboradores();
     else render();
   }
 
@@ -2587,6 +2664,122 @@
   colabFilterFuncao.addEventListener('change', renderColaboradores);
   colabSort.addEventListener('change', renderColaboradores);
 
+  const epiSection = document.getElementById('epi-section');
+  const epiForm = document.getElementById('epi-form');
+  const epiDataInput = document.getElementById('epi-data');
+  const epiColaboradorInput = document.getElementById('epi-colaborador');
+  const epiItemInput = document.getElementById('epi-item');
+  const epiSearch = document.getElementById('epi-search');
+  const epiGrid = document.getElementById('epi-grid');
+  const epiColaboradoresList = document.getElementById('epi-colaboradores-list');
+  const epiItensList = document.getElementById('epi-itens-list');
+
+  const EPI_SUGESTOES = ['Fardamento', 'Bota', 'Luvas', 'Capacete', 'Óculos de proteção', 'Protetor auricular', 'Colete'];
+
+  let entregasCache = [];
+  let entregasErro = false;
+
+  function hojeLocalIso() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  async function fetchEntregas() {
+    const { data, error } = await supabaseClient
+      .from('entregas_epi')
+      .select('*')
+      .order('data_entrega', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao carregar entregas de EPI', error);
+      entregasErro = true;
+    } else {
+      entregasErro = false;
+      entregasCache = data;
+    }
+    if (currentScreen === 'nav-epi') renderEpi();
+  }
+
+  function renderEpi() {
+    if (!epiDataInput.value) epiDataInput.value = hojeLocalIso();
+
+    const nomes = [...new Set(colaboradoresCache.map(c => c.nome))].sort((a, b) => a.localeCompare(b));
+    epiColaboradoresList.innerHTML = nomes.map(n => '<option value="' + escapeHtml(n) + '"></option>').join('');
+
+    const itens = [...new Set([...EPI_SUGESTOES, ...entregasCache.map(e => e.epi)])];
+    epiItensList.innerHTML = itens.map(i => '<option value="' + escapeHtml(i) + '"></option>').join('');
+
+    if (entregasErro) {
+      epiGrid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Erro ao carregar os dados</h3><p>Verifique sua conexão e se a tabela de entregas foi criada no banco.</p></div>';
+      return;
+    }
+
+    const termo = epiSearch.value.trim().toLowerCase();
+    const visiveis = entregasCache.filter(e =>
+      !termo || e.colaborador.toLowerCase().includes(termo) || e.epi.toLowerCase().includes(termo)
+    );
+
+    if (visiveis.length === 0) {
+      epiGrid.innerHTML = '<div class="empty-state"><div class="icon">🦺</div><h3>Nenhuma entrega registrada</h3><p>Preencha o formulário acima para registrar quem recebeu fardamento ou bota.</p></div>';
+      return;
+    }
+
+    epiGrid.innerHTML = visiveis.map(e =>
+      '<div class="colab-card epi-card">' +
+        '<div class="colab-card-header">' +
+          '<div class="colab-avatar">' + escapeHtml(colabIniciais(e.colaborador)) + '</div>' +
+          '<div><div class="colab-name">' + escapeHtml(e.colaborador) + '</div></div>' +
+        '</div>' +
+        '<div class="colab-meta">' +
+          '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
+          '<span class="colab-badge colab-badge-subsetor">🦺 ' + escapeHtml(e.epi) + '</span>' +
+        '</div>' +
+        '<div class="colab-actions">' +
+          '<button type="button" class="btn-colab-delete btn-epi-delete" data-id="' + e.id + '">🗑️ Excluir</button>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  epiForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const colaborador = epiColaboradorInput.value.trim();
+    const epi = epiItemInput.value.trim();
+    if (!colaborador || !epi) return;
+
+    const { error } = await supabaseClient.from('entregas_epi').insert({
+      data_entrega: epiDataInput.value || hojeLocalIso(),
+      colaborador,
+      epi
+    });
+
+    if (error) {
+      console.error('Erro ao cadastrar entrega de EPI', error);
+      alert('Não foi possível cadastrar a entrega. Verifique sua conexão e tente novamente.');
+      return;
+    }
+
+    epiColaboradorInput.value = '';
+    epiItemInput.value = '';
+    epiDataInput.value = hojeLocalIso();
+    epiColaboradorInput.focus();
+    await fetchEntregas();
+  });
+
+  epiGrid.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest('.btn-epi-delete');
+    if (!btn) return;
+    const entrega = entregasCache.find(e => e.id === btn.dataset.id);
+    if (!entrega) return;
+    if (!confirm('Excluir o registro de "' + entrega.epi + '" de ' + entrega.colaborador + '?')) return;
+    const { error } = await supabaseClient.from('entregas_epi').delete().eq('id', btn.dataset.id);
+    if (error) console.error('Erro ao excluir entrega de EPI', error);
+    else await fetchEntregas();
+  });
+
+  epiSearch.addEventListener('input', renderEpi);
+
   function initApp() {
     if (appInitialized) return;
     appInitialized = true;
@@ -2605,11 +2798,20 @@
       })
       .subscribe();
 
+    supabaseClient
+      .channel('entregas-epi-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'entregas_epi' }, () => {
+        fetchEntregas();
+      })
+      .subscribe();
+
     showScreen('nav-pendentes');
     fetchPautas();
     fetchColaboradores();
+    fetchEntregas();
     setInterval(() => {
-      if (currentScreen === 'nav-colaboradores') renderColaboradores();
+      if (currentScreen === 'nav-epi') renderEpi();
+      else if (currentScreen === 'nav-colaboradores') renderColaboradores();
       else render();
     }, 5 * 60 * 1000);
   }
