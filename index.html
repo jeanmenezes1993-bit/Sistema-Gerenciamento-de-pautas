@@ -2075,6 +2075,7 @@
   };
 
   const whatsappOverlay = document.getElementById('whatsapp-overlay');
+  const whatsappCard = document.getElementById('whatsapp-card');
   const whatsappList = document.getElementById('whatsapp-send-list');
   const whatsappClose = document.getElementById('whatsapp-close');
 
@@ -2087,15 +2088,30 @@
     return linhas.join('\n');
   }
 
-  function abrirModalWhatsapp(destinatarios, mensagem) {
+  function linkWhatsapp(nome, mensagem) {
+    return 'https://wa.me/' + PAUTA_TELEFONES[nome] + '?text=' + encodeURIComponent(mensagem);
+  }
+
+  // Vai direto para o WhatsApp Web/app de cada destinatário. Se o navegador bloquear
+  // alguma aba (comum quando há mais de um destinatário), mostra um aviso só com as
+  // que falharam, para abrir manualmente.
+  function irParaWhatsapp(destinatarios, mensagem) {
     const comTelefone = destinatarios.filter(nome => PAUTA_TELEFONES[nome]);
     if (comTelefone.length === 0) return;
 
-    whatsappList.innerHTML = comTelefone.map(nome =>
-      '<a class="btn-whatsapp" target="_blank" rel="noopener" href="https://wa.me/' + PAUTA_TELEFONES[nome] + '?text=' + encodeURIComponent(mensagem) + '">' +
+    const bloqueados = comTelefone.filter(nome => {
+      const janela = window.open(linkWhatsapp(nome, mensagem), '_blank', 'noopener');
+      return !janela;
+    });
+
+    if (bloqueados.length === 0) return;
+
+    whatsappList.innerHTML = bloqueados.map(nome =>
+      '<a class="btn-whatsapp" target="_blank" rel="noopener" href="' + linkWhatsapp(nome, mensagem) + '">' +
         '📲 Enviar no WhatsApp de ' + escapeHtml(nome.split(' ')[0]) +
       '</a>'
     ).join('');
+    whatsappCard.querySelector('p').textContent = 'Seu navegador bloqueou a abertura automática. Abra manualmente:';
     whatsappOverlay.classList.add('open');
   }
 
@@ -2142,7 +2158,7 @@
     form.reset();
     await fetchPautas();
     showScreen('nav-pendentes');
-    abrirModalWhatsapp(destinatarios, montarMensagemPauta(dadosMensagem));
+    irParaWhatsapp(destinatarios, montarMensagemPauta(dadosMensagem));
   });
 
   grid.addEventListener('click', async (e) => {
