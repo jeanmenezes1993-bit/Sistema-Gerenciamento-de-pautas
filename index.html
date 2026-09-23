@@ -1187,6 +1187,32 @@
     margin-bottom: 8px;
   }
 
+  /* ---- Aviso no WhatsApp ---- */
+  .whatsapp-send-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .btn-whatsapp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #25D366;
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+
+  .btn-whatsapp:hover { background: #1EBE57; }
+
   /* ---- Área Restrita: pop-up futurista ---- */
   .lock-overlay {
     background: #000000;
@@ -1533,6 +1559,17 @@
       <button type="submit" class="btn-primary">Confirmar adiamento</button>
     </div>
   </form>
+</div>
+
+<div class="modal-overlay" id="whatsapp-overlay">
+  <div class="modal-card" id="whatsapp-card">
+    <h3>Pauta cadastrada ✅</h3>
+    <p>Avise quem precisa saber pelo WhatsApp:</p>
+    <div class="whatsapp-send-list" id="whatsapp-send-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" id="whatsapp-close">Fechar</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay lock-overlay" id="pessoa-lock-overlay">
@@ -2030,6 +2067,43 @@
     el.style.height = el.scrollHeight + 'px';
   }
 
+  // Números de celular dos destinatários fixos, para o atalho de aviso no WhatsApp.
+  const PAUTA_TELEFONES = {
+    'Solange Vilarino': '5571996644903',
+    'Felipe Galvão': '5571996586215',
+    'Jean Menezes': '5571992759715'
+  };
+
+  const whatsappOverlay = document.getElementById('whatsapp-overlay');
+  const whatsappList = document.getElementById('whatsapp-send-list');
+  const whatsappClose = document.getElementById('whatsapp-close');
+
+  function montarMensagemPauta(dados) {
+    const linhas = ['📋 *Nova pauta:* ' + dados.pauta];
+    const prazo = formatDate(dados.dataLimite);
+    if (prazo) linhas.push('🗓️ Prazo: ' + prazo);
+    if (dados.observacao) linhas.push('📝 ' + dados.observacao);
+    if (dados.autor) linhas.push('\nCadastrado por: ' + dados.autor);
+    return linhas.join('\n');
+  }
+
+  function abrirModalWhatsapp(destinatarios, mensagem) {
+    const comTelefone = destinatarios.filter(nome => PAUTA_TELEFONES[nome]);
+    if (comTelefone.length === 0) return;
+
+    whatsappList.innerHTML = comTelefone.map(nome =>
+      '<a class="btn-whatsapp" target="_blank" rel="noopener" href="https://wa.me/' + PAUTA_TELEFONES[nome] + '?text=' + encodeURIComponent(mensagem) + '">' +
+        '📲 Enviar no WhatsApp de ' + escapeHtml(nome.split(' ')[0]) +
+      '</a>'
+    ).join('');
+    whatsappOverlay.classList.add('open');
+  }
+
+  whatsappClose.addEventListener('click', () => whatsappOverlay.classList.remove('open'));
+  whatsappOverlay.addEventListener('click', (e) => {
+    if (e.target === whatsappOverlay) whatsappOverlay.classList.remove('open');
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -2039,13 +2113,21 @@
     const submitBtn = form.querySelector('.btn-primary');
     submitBtn.disabled = true;
 
+    const destinatarios = getSelectedDestinatarios();
+    const dadosMensagem = {
+      pauta,
+      dataLimite: dataLimiteInput.value,
+      autor: autorInput.value.trim(),
+      observacao: obsInput.value.trim()
+    };
+
     const { error } = await supabaseClient.from('pautas').insert({
       pauta,
       data_inicial: localDateTimeToISO(dataInput.value),
       data_limite: localDateTimeToISO(dataLimiteInput.value),
-      autor: autorInput.value.trim(),
-      destinatarios: getSelectedDestinatarios(),
-      observacao: obsInput.value.trim(),
+      autor: dadosMensagem.autor,
+      destinatarios,
+      observacao: dadosMensagem.observacao,
       status: 'pendente'
     });
 
@@ -2060,6 +2142,7 @@
     form.reset();
     await fetchPautas();
     showScreen('nav-pendentes');
+    abrirModalWhatsapp(destinatarios, montarMensagemPauta(dadosMensagem));
   });
 
   grid.addEventListener('click', async (e) => {
