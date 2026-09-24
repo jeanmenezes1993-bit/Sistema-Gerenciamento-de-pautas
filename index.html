@@ -2863,6 +2863,14 @@
     return texto.replace(/^[\p{Extended_Pictographic}\uFE0F\u200D]+\s*/u, '').trim();
   }
 
+  // S\u00F3 fardamento (e varia\u00E7\u00F5es como uniforme/camiseta) tem prazo de reentrega \u2014 os
+  // demais EPIs (bota, luvas, caneta etc.) n\u00E3o recebem a regra dos 3 meses.
+  function ehFardamento(nome) {
+    const t = epiSemAcento(nome);
+    const item = EPI_CATALOGO.find(i => i.chaves.some(c => t.includes(c)));
+    return item ? item.nome === 'Fardamento' : false;
+  }
+
   let entregasCache = [];
   let entregasErro = false;
 
@@ -2934,11 +2942,14 @@
         '</div>' +
         '<div class="epi-items">' +
           g.entregas.map(e => {
-            const proximaEntrega = somarMeses(e.data_entrega, 3);
-            const venceu = proximaEntrega && proximaEntrega < hojeLocalIso();
-            const badgeRenovacao = venceu
-              ? '<span class="card-overdue-badge">⚠️ Reentrega venceu em ' + colabFormatDate(proximaEntrega) + '</span>'
-              : '<span class="colab-badge colab-badge-renovacao">🔁 Próxima entrega: ' + colabFormatDate(proximaEntrega) + '</span>';
+            let badgeRenovacao = '';
+            if (ehFardamento(e.epi)) {
+              const proximaEntrega = somarMeses(e.data_entrega, 3);
+              const venceu = proximaEntrega && proximaEntrega < hojeLocalIso();
+              badgeRenovacao = venceu
+                ? '<span class="card-overdue-badge">⚠️ Reentrega venceu em ' + colabFormatDate(proximaEntrega) + '</span>'
+                : '<span class="colab-badge colab-badge-renovacao">🔁 Próxima entrega: ' + colabFormatDate(proximaEntrega) + '</span>';
+            }
             return (
               '<div class="epi-item-row">' +
                 '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
