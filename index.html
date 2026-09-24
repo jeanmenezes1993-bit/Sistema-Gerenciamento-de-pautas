@@ -2420,9 +2420,13 @@
     { chave: 'auxiliar', base: 7, niveis: 3 }
   ];
   const CARGO_FIM = 10;
+  // Esses cargos sempre ficam por último na ordenação, depois de qualquer outro.
+  const CARGO_ULTIMOS = ['estagiario', 'rosinha'];
+  const CARGO_ULTIMO_RANK = CARGO_FIM + 1;
 
   function cargoRank(cargo) {
     const texto = (cargo || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+    if (CARGO_ULTIMOS.some(c => texto.includes(c))) return CARGO_ULTIMO_RANK;
     const familia = CARGO_FAMILIAS.find(f => texto.includes(f.chave));
     if (!familia) return CARGO_FIM;
     if (familia.niveis === 1) return familia.base;
