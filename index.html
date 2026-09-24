@@ -870,6 +870,11 @@
     background: var(--gold-tint);
   }
 
+  .colab-badge-renovacao {
+    color: var(--tint-text);
+    background: var(--tint-neutral);
+  }
+
   .colab-badge-secundaria {
     color: var(--success);
     background: var(--success-tint);
@@ -2382,6 +2387,16 @@
     return `${dia}/${mes}/${ano}`;
   }
 
+  // Soma meses a uma data "yyyy-mm-dd" usando o calendário local, evitando o problema
+  // de fuso horário de "new Date('yyyy-mm-dd')" (que interpreta como UTC e pode voltar um dia).
+  function somarMeses(value, meses) {
+    if (!value) return null;
+    const [ano, mes, dia] = value.split('-').map(Number);
+    const data = new Date(ano, mes - 1, dia);
+    data.setMonth(data.getMonth() + meses);
+    return data.getFullYear() + '-' + String(data.getMonth() + 1).padStart(2, '0') + '-' + String(data.getDate()).padStart(2, '0');
+  }
+
   function populateColabFilters() {
     const build = (select, values, placeholder) => {
       const current = select.value;
@@ -2918,13 +2933,21 @@
           '<div><div class="colab-name">' + escapeHtml(g.nome) + '</div></div>' +
         '</div>' +
         '<div class="epi-items">' +
-          g.entregas.map(e =>
-            '<div class="epi-item-row">' +
-              '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
-              '<span class="colab-badge colab-badge-subsetor">' + epiEmoji(e.epi) + ' ' + escapeHtml(e.epi) + '</span>' +
-              '<button type="button" class="epi-item-del btn-epi-delete" data-id="' + e.id + '" title="Excluir esta entrega">🗑️</button>' +
-            '</div>'
-          ).join('') +
+          g.entregas.map(e => {
+            const proximaEntrega = somarMeses(e.data_entrega, 3);
+            const venceu = proximaEntrega && proximaEntrega < hojeLocalIso();
+            const badgeRenovacao = venceu
+              ? '<span class="card-overdue-badge">⚠️ Reentrega venceu em ' + colabFormatDate(proximaEntrega) + '</span>'
+              : '<span class="colab-badge colab-badge-renovacao">🔁 Próxima entrega: ' + colabFormatDate(proximaEntrega) + '</span>';
+            return (
+              '<div class="epi-item-row">' +
+                '<span class="colab-badge">📅 ' + colabFormatDate(e.data_entrega) + '</span>' +
+                '<span class="colab-badge colab-badge-subsetor">' + epiEmoji(e.epi) + ' ' + escapeHtml(e.epi) + '</span>' +
+                badgeRenovacao +
+                '<button type="button" class="epi-item-del btn-epi-delete" data-id="' + e.id + '" title="Excluir esta entrega">🗑️</button>' +
+              '</div>'
+            );
+          }).join('') +
         '</div>' +
       '</div>'
     ).join('');
