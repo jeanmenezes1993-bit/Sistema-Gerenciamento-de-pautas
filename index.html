@@ -2068,11 +2068,21 @@
   }
 
   // Números de celular dos destinatários fixos, para o atalho de aviso no WhatsApp.
-  const PAUTA_TELEFONES = {
-    'Solange Vilarino': '5571996644903',
-    'Felipe Galvão': '5571996586215',
-    'Jean Menezes': '5571992759715'
-  };
+  // Não ficam escritos aqui: são buscados do banco (protegido por RLS) quando o app
+  // carrega e guardados só na memória do navegador, nunca no código público do repositório.
+  const PAUTA_TELEFONES = {};
+  const NOMES_COM_TELEFONE = ['Solange Vilarino', 'Felipe Galvão', 'Jean Menezes'];
+
+  async function carregarTelefonesContatos() {
+    await Promise.all(NOMES_COM_TELEFONE.map(async (nome) => {
+      const { data, error } = await supabaseClient.rpc('get_telefone_contato', { nome_busca: nome });
+      if (error) {
+        console.error('Erro ao buscar telefone de ' + nome, error);
+        return;
+      }
+      if (data) PAUTA_TELEFONES[nome] = data;
+    }));
+  }
 
   const whatsappOverlay = document.getElementById('whatsapp-overlay');
   const whatsappCard = document.getElementById('whatsapp-card');
@@ -2987,6 +2997,7 @@
     fetchPautas();
     fetchColaboradores();
     fetchEntregas();
+    carregarTelefonesContatos();
     setInterval(() => {
       if (currentScreen === 'nav-epi') renderEpi();
       else if (currentScreen === 'nav-colaboradores') renderColaboradores();
