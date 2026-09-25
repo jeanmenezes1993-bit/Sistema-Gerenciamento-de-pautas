@@ -3043,8 +3043,11 @@
     }, 5 * 60 * 1000);
   }
 
+  // Login de verdade: o usuário digita "Estoque" / a senha de sempre, mas por trás
+  // isso vira um login real no Supabase (e-mail fixo abaixo), então o banco só libera
+  // dados pra quem realmente autenticou — não é mais só uma tela por cima do sistema.
   const LOGIN_USER = 'Estoque';
-  const LOGIN_PASS = 'estoque2026';
+  const LOGIN_EMAIL = 'estoque@estoque.local';
 
   const loginScreen = document.getElementById('login-screen');
   const appRoot = document.getElementById('app-root');
@@ -3065,25 +3068,48 @@
     appRoot.style.display = 'none';
   }
 
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     loginError.style.display = 'none';
 
-    if (loginUser.value.trim() === LOGIN_USER && loginPassword.value === LOGIN_PASS) {
-      loginPassword.value = '';
-      showApp();
-    } else {
+    if (loginUser.value.trim() !== LOGIN_USER) {
       loginError.textContent = 'Usuário ou senha incorretos.';
       loginError.style.display = 'block';
+      return;
     }
+
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: LOGIN_EMAIL,
+      password: loginPassword.value
+    });
+
+    if (submitBtn) submitBtn.disabled = false;
+
+    if (error) {
+      console.error('Erro ao entrar', error);
+      loginError.textContent = 'Usuário ou senha incorretos.';
+      loginError.style.display = 'block';
+      return;
+    }
+
+    loginPassword.value = '';
+    showApp();
   });
 
-  logoutBtn.addEventListener('click', () => {
+  logoutBtn.addEventListener('click', async () => {
     unlockedScreens.clear();
+    await supabaseClient.auth.signOut();
     showLogin();
   });
 
-  showLogin();
+  // Se já existe uma sessão válida (login anterior lembrado pelo navegador), entra direto.
+  supabaseClient.auth.getSession().then(({ data }) => {
+    if (data.session) showApp();
+    else showLogin();
+  });
 </script>
 
 <script>
