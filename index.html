@@ -2095,12 +2095,7 @@
   const whatsappClose = document.getElementById('whatsapp-close');
 
   function montarMensagemPauta(dados) {
-    const linhas = ['📋 *Nova pauta:* ' + dados.pauta];
-    const prazo = formatDate(dados.dataLimite);
-    if (prazo) linhas.push('🗓️ Prazo: ' + prazo);
-    if (dados.observacao) linhas.push('📝 ' + dados.observacao);
-    if (dados.autor) linhas.push('\nCadastrado por: ' + dados.autor);
-    return linhas.join('\n');
+    return 'Nova pauta: ' + dados.pauta;
   }
 
   function linkWhatsapp(nome, mensagem) {
