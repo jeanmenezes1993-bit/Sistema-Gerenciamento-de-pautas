@@ -3156,6 +3156,15 @@
     { chave: 'feedback_colaborador', titulo: 'Feedback do colaborador' }
   ];
 
+  // Regra simples e transparente: compara quantos pontos fortes x pontos de melhoria
+  // foram escritos. Mais pontos de melhoria que fortes = Regular. Sem dados = não avalia.
+  function classificarDesempenhoOneOnOne(registro) {
+    const nFortes = atividadesToItems(registro.pontos_fortes).length;
+    const nMelhoria = atividadesToItems(registro.pontos_melhoria).length;
+    if (nFortes === 0 && nMelhoria === 0) return null;
+    return nMelhoria > nFortes ? 'Regular' : 'Bom';
+  }
+
   async function fetchOneOnOne() {
     const { data, error } = await supabaseClient
       .from('one_on_one')
@@ -3210,10 +3219,15 @@
         '</div>' +
         g.encontros.map(e => {
           const proximo = somarMeses(e.data_encontro, 3);
+          const desempenhoClass = classificarDesempenhoOneOnOne(e);
+          const badgeDesempenho = desempenhoClass
+            ? '<span class="colab-badge ' + (desempenhoClass === 'Bom' ? 'colab-badge-secundaria' : 'colab-badge-subsetor') + '">Desempenho: ' + desempenhoClass + '</span>'
+            : '';
           return (
             '<div class="oneonone-entry">' +
               '<div class="oneonone-entry-header">' +
                 '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
+                badgeDesempenho +
                 '<span class="colab-badge colab-badge-renovacao">Próximo one-on-one: ' + colabFormatDate(proximo) + '</span>' +
               '</div>' +
               ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
@@ -3249,7 +3263,13 @@
     doc.text('Colaborador: ' + dados.colaborador, margem, y);
     y += 7;
     doc.text('Data: ' + colabFormatDate(dados.data), margem, y);
-    y += 10;
+    y += 7;
+    const desempenhoClass = classificarDesempenhoOneOnOne(dados);
+    if (desempenhoClass) {
+      doc.text('Desempenho: ' + desempenhoClass, margem, y);
+      y += 7;
+    }
+    y += 3;
 
     ONEONONE_TOPICOS.forEach(t => {
       const pontos = atividadesToItems(dados[t.chave]);
