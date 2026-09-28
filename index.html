@@ -1048,6 +1048,12 @@
 
   .oneonone-entry-actions { margin-top: 10px; }
 
+  .oneonone-trend {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
   .oneonone-entry-topico { margin: 8px 0 0; }
   .oneonone-entry-topico strong { display: block; font-size: 12.5px; color: var(--text-muted); margin-bottom: 2px; }
   .oneonone-entry-topico .colab-atividades { font-size: 13.5px; }
@@ -1618,6 +1624,11 @@
       <div class="field full">
         <label for="oneonone-feedback">Feedback do colaborador</label>
         <textarea id="oneonone-feedback" placeholder="O que o colaborador trouxe de volta..."></textarea>
+      </div>
+
+      <div class="field full">
+        <label for="oneonone-combinados">Combinados para o próximo período</label>
+        <textarea id="oneonone-combinados" placeholder="O que ficou combinado pro próximo trimestre..."></textarea>
       </div>
 
       <div class="oneonone-form-actions">
@@ -3115,6 +3126,7 @@
   const oneOnOnePontosFortesInput = document.getElementById('oneonone-pontos-fortes');
   const oneOnOnePontosMelhoriaInput = document.getElementById('oneonone-pontos-melhoria');
   const oneOnOneFeedbackInput = document.getElementById('oneonone-feedback');
+  const oneOnOneCombinadosInput = document.getElementById('oneonone-combinados');
   const oneOnOneSearch = document.getElementById('oneonone-search');
   const oneOnOneGrid = document.getElementById('oneonone-grid');
   const oneOnOneColaboradoresList = document.getElementById('oneonone-colaboradores-list');
@@ -3133,6 +3145,7 @@
     oneOnOnePontosFortesInput.value = registro.pontos_fortes || '';
     oneOnOnePontosMelhoriaInput.value = registro.pontos_melhoria || '';
     oneOnOneFeedbackInput.value = registro.feedback_colaborador || '';
+    oneOnOneCombinadosInput.value = registro.combinados || '';
     oneOnOneSubmitBtn.textContent = '💾 Salvar alterações';
     oneOnOneCancelEditBtn.style.display = '';
     oneOnOneForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3153,7 +3166,8 @@
     { chave: 'desempenho', titulo: 'Desempenho' },
     { chave: 'pontos_fortes', titulo: 'Pontos fortes' },
     { chave: 'pontos_melhoria', titulo: 'Pontos de melhoria' },
-    { chave: 'feedback_colaborador', titulo: 'Feedback do colaborador' }
+    { chave: 'feedback_colaborador', titulo: 'Feedback do colaborador' },
+    { chave: 'combinados', titulo: 'Combinados para o próximo período' }
   ];
 
   // Regra simples e transparente: compara quantos pontos fortes x pontos de melhoria
@@ -3211,38 +3225,52 @@
       grupos.get(k).encontros.push(e);
     });
 
-    oneOnOneGrid.innerHTML = [...grupos.values()].map(g =>
-      '<div class="colab-card epi-card">' +
-        '<div class="colab-card-header">' +
-          '<div class="colab-avatar">' + escapeHtml(colabIniciais(g.nome)) + '</div>' +
-          '<div><div class="colab-name">' + escapeHtml(g.nome) + '</div></div>' +
-        '</div>' +
-        g.encontros.map(e => {
-          const proximo = somarMeses(e.data_encontro, 3);
-          const desempenhoClass = classificarDesempenhoOneOnOne(e);
-          const badgeDesempenho = desempenhoClass
-            ? '<span class="colab-badge ' + (desempenhoClass === 'Bom' ? 'colab-badge-secundaria' : 'colab-badge-subsetor') + '">Desempenho: ' + desempenhoClass + '</span>'
-            : '';
-          return (
-            '<div class="oneonone-entry">' +
-              '<div class="oneonone-entry-header">' +
-                '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
-                badgeDesempenho +
-                '<span class="colab-badge colab-badge-renovacao">Próximo one-on-one: ' + colabFormatDate(proximo) + '</span>' +
-              '</div>' +
-              ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
-                '<div class="oneonone-entry-topico"><strong>' + t.titulo + '</strong><ul class="colab-atividades">' + atividadesToListHtml(e[t.chave], '') + '</ul></div>'
-              ).join('') +
-              '<div class="colab-actions oneonone-entry-actions">' +
-                '<button type="button" class="btn-colab-export btn-oneonone-pdf" data-id="' + e.id + '">📄 Baixar PDF</button>' +
-                '<button type="button" class="btn-colab-edit btn-oneonone-edit" data-id="' + e.id + '">✏️ Editar</button>' +
-                '<button type="button" class="btn-colab-delete btn-oneonone-delete" data-id="' + e.id + '">🗑️ Excluir</button>' +
-              '</div>' +
-            '</div>'
-          );
-        }).join('') +
-      '</div>'
-    ).join('');
+    oneOnOneGrid.innerHTML = [...grupos.values()].map(g => {
+      // Evolução: classificações em ordem cronológica (mais antiga → mais recente).
+      const classificacoes = g.encontros.slice().reverse().map(classificarDesempenhoOneOnOne).filter(Boolean);
+      const trendHtml = classificacoes.length >= 2
+        ? '<div class="oneonone-trend">Evolução: ' + classificacoes.join(' → ') + '</div>'
+        : '';
+
+      return (
+        '<div class="colab-card epi-card">' +
+          '<div class="colab-card-header">' +
+            '<div class="colab-avatar">' + escapeHtml(colabIniciais(g.nome)) + '</div>' +
+            '<div><div class="colab-name">' + escapeHtml(g.nome) + '</div>' + trendHtml + '</div>' +
+          '</div>' +
+          g.encontros.map((e, indice) => {
+            const proximo = somarMeses(e.data_encontro, 3);
+            const desempenhoClass = classificarDesempenhoOneOnOne(e);
+            const badgeDesempenho = desempenhoClass
+              ? '<span class="colab-badge ' + (desempenhoClass === 'Bom' ? 'colab-badge-secundaria' : 'colab-badge-subsetor') + '">Desempenho: ' + desempenhoClass + '</span>'
+              : '';
+            // Só o encontro mais recente (índice 0) pode estar "atrasado" — os antigos
+            // sempre teriam a data de próximo one-on-one no passado, o que é normal.
+            const atrasado = indice === 0 && proximo < hojeLocalIso();
+            const badgeProximo = atrasado
+              ? '<span class="card-overdue-badge">⚠️ 1:1 atrasado desde ' + colabFormatDate(proximo) + '</span>'
+              : '<span class="colab-badge colab-badge-renovacao">Próximo one-on-one: ' + colabFormatDate(proximo) + '</span>';
+            return (
+              '<div class="oneonone-entry">' +
+                '<div class="oneonone-entry-header">' +
+                  '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
+                  badgeDesempenho +
+                  badgeProximo +
+                '</div>' +
+                ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
+                  '<div class="oneonone-entry-topico"><strong>' + t.titulo + '</strong><ul class="colab-atividades">' + atividadesToListHtml(e[t.chave], '') + '</ul></div>'
+                ).join('') +
+                '<div class="colab-actions oneonone-entry-actions">' +
+                  '<button type="button" class="btn-colab-export btn-oneonone-pdf" data-id="' + e.id + '">📄 Baixar PDF</button>' +
+                  '<button type="button" class="btn-colab-edit btn-oneonone-edit" data-id="' + e.id + '">✏️ Editar</button>' +
+                  '<button type="button" class="btn-colab-delete btn-oneonone-delete" data-id="' + e.id + '">🗑️ Excluir</button>' +
+                '</div>' +
+              '</div>'
+            );
+          }).join('') +
+        '</div>'
+      );
+    }).join('');
   }
 
   function gerarPdfOneOnOne(dados) {
@@ -3309,7 +3337,8 @@
       desempenho: oneOnOneDesempenhoInput.value.trim(),
       pontos_fortes: oneOnOnePontosFortesInput.value.trim(),
       pontos_melhoria: oneOnOnePontosMelhoriaInput.value.trim(),
-      feedback_colaborador: oneOnOneFeedbackInput.value.trim()
+      feedback_colaborador: oneOnOneFeedbackInput.value.trim(),
+      combinados: oneOnOneCombinadosInput.value.trim()
     };
 
     const { error } = oneOnOneEditandoId
