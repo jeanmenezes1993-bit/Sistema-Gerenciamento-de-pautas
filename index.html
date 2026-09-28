@@ -1027,7 +1027,7 @@
     color: var(--text);
   }
 
-  .oneonone-form .btn-primary { align-self: flex-start; }
+  .oneonone-form-actions { display: flex; align-items: center; gap: 12px; align-self: flex-start; }
 
   #oneonone-search { flex: 1 1 220px; min-width: 180px; }
 
@@ -1620,7 +1620,10 @@
         <textarea id="oneonone-feedback" placeholder="O que o colaborador trouxe de volta..."></textarea>
       </div>
 
-      <button type="submit" class="btn-primary">＋ Cadastrar</button>
+      <div class="oneonone-form-actions">
+        <button type="submit" class="btn-primary" id="oneonone-submit-btn">＋ Cadastrar</button>
+        <button type="button" class="btn-secondary" id="oneonone-cancel-edit" style="display:none;">Cancelar edição</button>
+      </div>
     </form>
 
     <div class="colab-toolbar">
@@ -3115,9 +3118,36 @@
   const oneOnOneSearch = document.getElementById('oneonone-search');
   const oneOnOneGrid = document.getElementById('oneonone-grid');
   const oneOnOneColaboradoresList = document.getElementById('oneonone-colaboradores-list');
+  const oneOnOneSubmitBtn = document.getElementById('oneonone-submit-btn');
+  const oneOnOneCancelEditBtn = document.getElementById('oneonone-cancel-edit');
 
   let oneOnOneCache = [];
   let oneOnOneErro = false;
+  let oneOnOneEditandoId = null;
+
+  function entrarModoEdicaoOneOnOne(registro) {
+    oneOnOneEditandoId = registro.id;
+    oneOnOneColaboradorInput.value = registro.colaborador;
+    oneOnOneDataInput.value = registro.data_encontro;
+    oneOnOneDesempenhoInput.value = registro.desempenho || '';
+    oneOnOnePontosFortesInput.value = registro.pontos_fortes || '';
+    oneOnOnePontosMelhoriaInput.value = registro.pontos_melhoria || '';
+    oneOnOneFeedbackInput.value = registro.feedback_colaborador || '';
+    oneOnOneSubmitBtn.textContent = '💾 Salvar alterações';
+    oneOnOneCancelEditBtn.style.display = '';
+    oneOnOneForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    oneOnOneColaboradorInput.focus();
+  }
+
+  function sairModoEdicaoOneOnOne() {
+    oneOnOneEditandoId = null;
+    oneOnOneForm.reset();
+    oneOnOneDataInput.value = hojeLocalIso();
+    oneOnOneSubmitBtn.textContent = '＋ Cadastrar';
+    oneOnOneCancelEditBtn.style.display = 'none';
+  }
+
+  oneOnOneCancelEditBtn.addEventListener('click', sairModoEdicaoOneOnOne);
 
   const ONEONONE_TOPICOS = [
     { chave: 'desempenho', titulo: 'Desempenho' },
@@ -3191,6 +3221,7 @@
               ).join('') +
               '<div class="colab-actions oneonone-entry-actions">' +
                 '<button type="button" class="btn-colab-export btn-oneonone-pdf" data-id="' + e.id + '">📄 Baixar PDF</button>' +
+                '<button type="button" class="btn-colab-edit btn-oneonone-edit" data-id="' + e.id + '">✏️ Editar</button>' +
                 '<button type="button" class="btn-colab-delete btn-oneonone-delete" data-id="' + e.id + '">🗑️ Excluir</button>' +
               '</div>' +
             '</div>'
@@ -3261,17 +3292,19 @@
       feedback_colaborador: oneOnOneFeedbackInput.value.trim()
     };
 
-    const { error } = await supabaseClient.from('one_on_one').insert(registro);
+    const { error } = oneOnOneEditandoId
+      ? await supabaseClient.from('one_on_one').update(registro).eq('id', oneOnOneEditandoId)
+      : await supabaseClient.from('one_on_one').insert(registro);
 
     if (error) {
-      console.error('Erro ao cadastrar one-on-one', error);
-      alert('Não foi possível cadastrar o acompanhamento. Verifique sua conexão e tente novamente.');
+      console.error('Erro ao salvar one-on-one', error);
+      alert('Não foi possível salvar o acompanhamento. Verifique sua conexão e tente novamente.');
       return;
     }
 
-    oneOnOneForm.reset();
-    oneOnOneDataInput.value = hojeLocalIso();
-    oneOnOneColaboradorInput.focus();
+    const estavaEditando = !!oneOnOneEditandoId;
+    sairModoEdicaoOneOnOne();
+    if (!estavaEditando) oneOnOneColaboradorInput.focus();
     await fetchOneOnOne();
   });
 
@@ -3280,6 +3313,13 @@
     if (pdfBtn) {
       const registro = oneOnOneCache.find(e => e.id === pdfBtn.dataset.id);
       if (registro) gerarPdfOneOnOne({ ...registro, data: registro.data_encontro });
+      return;
+    }
+
+    const editBtn = ev.target.closest('.btn-oneonone-edit');
+    if (editBtn) {
+      const registro = oneOnOneCache.find(e => e.id === editBtn.dataset.id);
+      if (registro) entrarModoEdicaoOneOnOne(registro);
       return;
     }
 
