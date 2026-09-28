@@ -1046,7 +1046,7 @@
     margin-bottom: 8px;
   }
 
-  .oneonone-entry-header .btn-oneonone-pdf { margin-left: auto; }
+  .oneonone-entry-actions { margin-top: 10px; }
 
   .oneonone-entry-topico { margin: 8px 0 0; }
   .oneonone-entry-topico strong { display: block; font-size: 12.5px; color: var(--text-muted); margin-bottom: 2px; }
@@ -3185,12 +3185,14 @@
               '<div class="oneonone-entry-header">' +
                 '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
                 '<span class="colab-badge colab-badge-renovacao">Próximo one-on-one: ' + colabFormatDate(proximo) + '</span>' +
-                '<button type="button" class="epi-item-del btn-oneonone-pdf" data-id="' + e.id + '" title="Baixar em PDF">📄</button>' +
-                '<button type="button" class="epi-item-del btn-oneonone-delete" data-id="' + e.id + '" title="Excluir este acompanhamento">🗑️</button>' +
               '</div>' +
               ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
                 '<div class="oneonone-entry-topico"><strong>' + t.titulo + '</strong><ul class="colab-atividades">' + atividadesToListHtml(e[t.chave], '') + '</ul></div>'
               ).join('') +
+              '<div class="colab-actions oneonone-entry-actions">' +
+                '<button type="button" class="btn-colab-export btn-oneonone-pdf" data-id="' + e.id + '">📄 Baixar PDF</button>' +
+                '<button type="button" class="btn-colab-delete btn-oneonone-delete" data-id="' + e.id + '">🗑️ Excluir</button>' +
+              '</div>' +
             '</div>'
           );
         }).join('') +
