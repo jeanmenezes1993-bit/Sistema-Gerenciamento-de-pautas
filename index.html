@@ -16,6 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pautas">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
   (function () {
     var saved = localStorage.getItem('pautas_theme');
@@ -1001,6 +1002,54 @@
 
   #epi-search { flex: 1 1 220px; min-width: 180px; }
 
+  /* ---- One-on-One ---- */
+  .oneonone-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .oneonone-form input[type="date"] {
+    width: 100%;
+    height: 41px;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text);
+  }
+
+  .oneonone-form .btn-primary { align-self: flex-start; }
+
+  #oneonone-search { flex: 1 1 220px; min-width: 180px; }
+
+  .oneonone-entry {
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .oneonone-entry + .oneonone-entry { margin-top: 12px; }
+
+  .oneonone-entry-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .oneonone-entry-topico { margin: 8px 0 0; }
+  .oneonone-entry-topico strong { display: block; font-size: 12.5px; color: var(--text-muted); margin-bottom: 2px; }
+  .oneonone-entry-topico p { margin: 0; font-size: 13.5px; white-space: pre-wrap; }
+
   .epi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1415,6 +1464,7 @@
       <div class="nav-section-label" data-group="administracao">Administração</div>
       <button class="nav-btn" id="nav-epi" type="button" data-group="administracao"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg> Fardamento e EPI</button>
       <button class="nav-btn" id="nav-colaboradores" type="button" data-group="administracao"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Colaboradores</button>
+      <button class="nav-btn" id="nav-one-on-one" type="button" data-group="administracao"><svg class="nav-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9-1.5 0-2.9-.37-4.14-1.02L3 21l1.02-3.86A8.96 8.96 0 0 1 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg> One-on-One</button>
     </nav>
     <div class="sidebar-footer">
       <button class="logout-btn" id="logout-btn" type="button">
@@ -1527,6 +1577,55 @@
     </div>
 
     <div class="epi-grid" id="epi-grid"></div>
+  </section>
+
+  <section id="one-on-one-section" class="colab-module" style="display:none;">
+    <div class="colab-header">
+      <h2>One-on-One</h2>
+      <p>Acompanhamento trimestral com cada colaborador</p>
+    </div>
+
+    <form class="oneonone-form" id="oneonone-form">
+      <div class="field-row colab-field-row">
+        <div class="field">
+          <label for="oneonone-colaborador">Colaborador</label>
+          <input type="text" id="oneonone-colaborador" list="oneonone-colaboradores-list" placeholder="Nome do colaborador" autocomplete="off" required>
+          <datalist id="oneonone-colaboradores-list"></datalist>
+        </div>
+        <div class="field">
+          <label for="oneonone-data">Data do encontro</label>
+          <input type="date" id="oneonone-data" required>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label for="oneonone-desempenho">Desempenho</label>
+        <textarea id="oneonone-desempenho" placeholder="Como foi o desempenho no período..."></textarea>
+      </div>
+
+      <div class="field full">
+        <label for="oneonone-pontos-fortes">Pontos fortes</label>
+        <textarea id="oneonone-pontos-fortes" placeholder="O que o colaborador tem feito bem..."></textarea>
+      </div>
+
+      <div class="field full">
+        <label for="oneonone-pontos-melhoria">Pontos de melhoria</label>
+        <textarea id="oneonone-pontos-melhoria" placeholder="O que pode evoluir..."></textarea>
+      </div>
+
+      <div class="field full">
+        <label for="oneonone-feedback">Feedback do colaborador</label>
+        <textarea id="oneonone-feedback" placeholder="O que o colaborador trouxe de volta..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary">＋ Cadastrar e baixar PDF</button>
+    </form>
+
+    <div class="colab-toolbar">
+      <input type="text" id="oneonone-search" placeholder="🔍 Pesquisar por colaborador...">
+    </div>
+
+    <div class="epi-grid" id="oneonone-grid"></div>
   </section>
 
   <section id="colaboradores-section" class="colab-module" style="display:none;">
@@ -1719,11 +1818,13 @@
     const pessoa = currentPessoaFiltro();
     const isColaboradores = screen === 'nav-colaboradores';
     const isEpi = screen === 'nav-epi';
+    const isOneOnOne = screen === 'nav-one-on-one';
 
     formSection.style.display = screen === 'nav-cadastro' ? '' : 'none';
-    cardsSection.style.display = (screen === 'nav-cadastro' || isColaboradores || isEpi) ? 'none' : '';
+    cardsSection.style.display = (screen === 'nav-cadastro' || isColaboradores || isEpi || isOneOnOne) ? 'none' : '';
     colaboradoresSection.style.display = isColaboradores ? '' : 'none';
     document.getElementById('epi-section').style.display = isEpi ? '' : 'none';
+    document.getElementById('one-on-one-section').style.display = isOneOnOne ? '' : 'none';
 
     if (screen === 'nav-pendentes') sectionTitleText.textContent = 'Pautas Cadastradas';
     else if (screen === 'nav-finalizados') sectionTitleText.textContent = 'Pautas Finalizadas';
@@ -1731,6 +1832,7 @@
 
     closeSidebar();
     if (isEpi) renderEpi();
+    else if (isOneOnOne) renderOneOnOne();
     else if (isColaboradores) renderColaboradores();
     else render();
   }
@@ -3001,6 +3103,173 @@
 
   epiSearch.addEventListener('input', renderEpi);
 
+  const oneOnOneForm = document.getElementById('oneonone-form');
+  const oneOnOneColaboradorInput = document.getElementById('oneonone-colaborador');
+  const oneOnOneDataInput = document.getElementById('oneonone-data');
+  const oneOnOneDesempenhoInput = document.getElementById('oneonone-desempenho');
+  const oneOnOnePontosFortesInput = document.getElementById('oneonone-pontos-fortes');
+  const oneOnOnePontosMelhoriaInput = document.getElementById('oneonone-pontos-melhoria');
+  const oneOnOneFeedbackInput = document.getElementById('oneonone-feedback');
+  const oneOnOneSearch = document.getElementById('oneonone-search');
+  const oneOnOneGrid = document.getElementById('oneonone-grid');
+  const oneOnOneColaboradoresList = document.getElementById('oneonone-colaboradores-list');
+
+  let oneOnOneCache = [];
+  let oneOnOneErro = false;
+
+  const ONEONONE_TOPICOS = [
+    { chave: 'desempenho', titulo: 'Desempenho' },
+    { chave: 'pontos_fortes', titulo: 'Pontos fortes' },
+    { chave: 'pontos_melhoria', titulo: 'Pontos de melhoria' },
+    { chave: 'feedback_colaborador', titulo: 'Feedback do colaborador' }
+  ];
+
+  async function fetchOneOnOne() {
+    const { data, error } = await supabaseClient
+      .from('one_on_one')
+      .select('*')
+      .order('data_encontro', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao carregar acompanhamentos one-on-one', error);
+      oneOnOneErro = true;
+    } else {
+      oneOnOneErro = false;
+      oneOnOneCache = data;
+    }
+    if (currentScreen === 'nav-one-on-one') renderOneOnOne();
+  }
+
+  function renderOneOnOne() {
+    if (!oneOnOneDataInput.value) oneOnOneDataInput.value = hojeLocalIso();
+
+    const nomes = [...new Set(colaboradoresCache.map(c => c.nome))].sort((a, b) => a.localeCompare(b));
+    oneOnOneColaboradoresList.innerHTML = nomes.map(n => '<option value="' + escapeHtml(n) + '"></option>').join('');
+
+    if (oneOnOneErro) {
+      oneOnOneGrid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Erro ao carregar os dados</h3><p>Verifique sua conexão e se a tabela one_on_one foi criada no banco.</p></div>';
+      return;
+    }
+
+    const termo = oneOnOneSearch.value.trim().toLowerCase();
+    const visiveis = oneOnOneCache.filter(e => !termo || e.colaborador.toLowerCase().includes(termo));
+
+    if (visiveis.length === 0) {
+      oneOnOneGrid.innerHTML = '<div class="empty-state"><div class="icon">🗨️</div><h3>Nenhum acompanhamento registrado</h3><p>Preencha o formulário acima para registrar o 1:1 trimestral.</p></div>';
+      return;
+    }
+
+    // Um cartão por colaborador: todos os acompanhamentos dele ficam juntos (mais recentes primeiro)
+    const chave = nome => nome.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const oficiais = new Map(colaboradoresCache.map(c => [chave(c.nome), c.nome]));
+    const grupos = new Map();
+    visiveis.forEach(e => {
+      const k = chave(e.colaborador);
+      if (!grupos.has(k)) grupos.set(k, { nome: oficiais.get(k) || e.colaborador, encontros: [] });
+      grupos.get(k).encontros.push(e);
+    });
+
+    oneOnOneGrid.innerHTML = [...grupos.values()].map(g =>
+      '<div class="colab-card epi-card">' +
+        '<div class="colab-card-header">' +
+          '<div class="colab-avatar">' + escapeHtml(colabIniciais(g.nome)) + '</div>' +
+          '<div><div class="colab-name">' + escapeHtml(g.nome) + '</div></div>' +
+        '</div>' +
+        g.encontros.map(e =>
+          '<div class="oneonone-entry">' +
+            '<div class="oneonone-entry-header">' +
+              '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
+              '<button type="button" class="epi-item-del btn-oneonone-delete" data-id="' + e.id + '" title="Excluir este acompanhamento">🗑️</button>' +
+            '</div>' +
+            ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
+              '<div class="oneonone-entry-topico"><strong>' + t.titulo + '</strong><p>' + escapeHtml(e[t.chave]) + '</p></div>'
+            ).join('') +
+          '</div>'
+        ).join('') +
+      '</div>'
+    ).join('');
+  }
+
+  function gerarPdfOneOnOne(dados) {
+    if (!window.jspdf) {
+      console.error('jsPDF não carregou; PDF não foi gerado.');
+      return;
+    }
+    const doc = new window.jspdf.jsPDF();
+    const margem = 15;
+    const largura = 180;
+    let y = margem;
+
+    doc.setFontSize(16);
+    doc.text('One-on-One', margem, y);
+    y += 10;
+
+    doc.setFontSize(11);
+    doc.text('Colaborador: ' + dados.colaborador, margem, y);
+    y += 7;
+    doc.text('Data: ' + colabFormatDate(dados.data), margem, y);
+    y += 10;
+
+    ONEONONE_TOPICOS.forEach(t => {
+      const texto = dados[t.chave] || '—';
+      doc.setFont(undefined, 'bold');
+      doc.text(t.titulo, margem, y);
+      y += 6;
+      doc.setFont(undefined, 'normal');
+      const linhas = doc.splitTextToSize(texto, largura);
+      if (y + linhas.length * 6 > 280) { doc.addPage(); y = margem; }
+      doc.text(linhas, margem, y);
+      y += linhas.length * 6 + 6;
+    });
+
+    const nomeArquivo = 'one-on-one-' + dados.colaborador.trim().replace(/\s+/g, '-') + '-' + dados.data + '.pdf';
+    doc.save(nomeArquivo);
+  }
+
+  oneOnOneForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const colaborador = oneOnOneColaboradorInput.value.trim();
+    if (!colaborador) return;
+
+    const registro = {
+      colaborador,
+      data_encontro: oneOnOneDataInput.value || hojeLocalIso(),
+      desempenho: oneOnOneDesempenhoInput.value.trim(),
+      pontos_fortes: oneOnOnePontosFortesInput.value.trim(),
+      pontos_melhoria: oneOnOnePontosMelhoriaInput.value.trim(),
+      feedback_colaborador: oneOnOneFeedbackInput.value.trim()
+    };
+
+    const { error } = await supabaseClient.from('one_on_one').insert(registro);
+
+    if (error) {
+      console.error('Erro ao cadastrar one-on-one', error);
+      alert('Não foi possível cadastrar o acompanhamento. Verifique sua conexão e tente novamente.');
+      return;
+    }
+
+    gerarPdfOneOnOne({ colaborador, data: registro.data_encontro, ...registro });
+
+    oneOnOneForm.reset();
+    oneOnOneDataInput.value = hojeLocalIso();
+    oneOnOneColaboradorInput.focus();
+    await fetchOneOnOne();
+  });
+
+  oneOnOneGrid.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest('.btn-oneonone-delete');
+    if (!btn) return;
+    const registro = oneOnOneCache.find(e => e.id === btn.dataset.id);
+    if (!registro) return;
+    if (!confirm('Excluir o acompanhamento de ' + colabFormatDate(registro.data_encontro) + ' de ' + registro.colaborador + '?')) return;
+    const { error } = await supabaseClient.from('one_on_one').delete().eq('id', btn.dataset.id);
+    if (error) console.error('Erro ao excluir one-on-one', error);
+    else await fetchOneOnOne();
+  });
+
+  oneOnOneSearch.addEventListener('input', renderOneOnOne);
+
   function initApp() {
     if (appInitialized) return;
     appInitialized = true;
@@ -3026,13 +3295,22 @@
       })
       .subscribe();
 
+    supabaseClient
+      .channel('one-on-one-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'one_on_one' }, () => {
+        fetchOneOnOne();
+      })
+      .subscribe();
+
     showScreen('nav-pendentes');
     fetchPautas();
     fetchColaboradores();
     fetchEntregas();
+    fetchOneOnOne();
     carregarTelefonesContatos();
     setInterval(() => {
       if (currentScreen === 'nav-epi') renderEpi();
+      else if (currentScreen === 'nav-one-on-one') renderOneOnOne();
       else if (currentScreen === 'nav-colaboradores') renderColaboradores();
       else render();
     }, 5 * 60 * 1000);
