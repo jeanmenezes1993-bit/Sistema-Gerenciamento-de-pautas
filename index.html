@@ -1040,15 +1040,17 @@
 
   .oneonone-entry-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    gap: 6px 8px;
     margin-bottom: 8px;
   }
 
+  .oneonone-entry-header .btn-oneonone-pdf { margin-left: auto; }
+
   .oneonone-entry-topico { margin: 8px 0 0; }
   .oneonone-entry-topico strong { display: block; font-size: 12.5px; color: var(--text-muted); margin-bottom: 2px; }
-  .oneonone-entry-topico p { margin: 0; font-size: 13.5px; white-space: pre-wrap; }
+  .oneonone-entry-topico .colab-atividades { font-size: 13.5px; }
 
   .epi-grid {
     display: grid;
@@ -1618,7 +1620,7 @@
         <textarea id="oneonone-feedback" placeholder="O que o colaborador trouxe de volta..."></textarea>
       </div>
 
-      <button type="submit" class="btn-primary">＋ Cadastrar e baixar PDF</button>
+      <button type="submit" class="btn-primary">＋ Cadastrar</button>
     </form>
 
     <div class="colab-toolbar">
@@ -3176,17 +3178,22 @@
           '<div class="colab-avatar">' + escapeHtml(colabIniciais(g.nome)) + '</div>' +
           '<div><div class="colab-name">' + escapeHtml(g.nome) + '</div></div>' +
         '</div>' +
-        g.encontros.map(e =>
-          '<div class="oneonone-entry">' +
-            '<div class="oneonone-entry-header">' +
-              '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
-              '<button type="button" class="epi-item-del btn-oneonone-delete" data-id="' + e.id + '" title="Excluir este acompanhamento">🗑️</button>' +
-            '</div>' +
-            ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
-              '<div class="oneonone-entry-topico"><strong>' + t.titulo + '</strong><p>' + escapeHtml(e[t.chave]) + '</p></div>'
-            ).join('') +
-          '</div>'
-        ).join('') +
+        g.encontros.map(e => {
+          const proximo = somarMeses(e.data_encontro, 3);
+          return (
+            '<div class="oneonone-entry">' +
+              '<div class="oneonone-entry-header">' +
+                '<span class="colab-badge">' + colabFormatDate(e.data_encontro) + '</span>' +
+                '<span class="colab-badge colab-badge-renovacao">Próximo one-on-one: ' + colabFormatDate(proximo) + '</span>' +
+                '<button type="button" class="epi-item-del btn-oneonone-pdf" data-id="' + e.id + '" title="Baixar em PDF">📄</button>' +
+                '<button type="button" class="epi-item-del btn-oneonone-delete" data-id="' + e.id + '" title="Excluir este acompanhamento">🗑️</button>' +
+              '</div>' +
+              ONEONONE_TOPICOS.filter(t => e[t.chave]).map(t =>
+                '<div class="oneonone-entry-topico"><strong>' + t.titulo + '</strong><ul class="colab-atividades">' + atividadesToListHtml(e[t.chave], '') + '</ul></div>'
+              ).join('') +
+            '</div>'
+          );
+        }).join('') +
       '</div>'
     ).join('');
   }
@@ -3249,8 +3256,6 @@
       return;
     }
 
-    gerarPdfOneOnOne({ colaborador, data: registro.data_encontro, ...registro });
-
     oneOnOneForm.reset();
     oneOnOneDataInput.value = hojeLocalIso();
     oneOnOneColaboradorInput.focus();
@@ -3258,6 +3263,13 @@
   });
 
   oneOnOneGrid.addEventListener('click', async (ev) => {
+    const pdfBtn = ev.target.closest('.btn-oneonone-pdf');
+    if (pdfBtn) {
+      const registro = oneOnOneCache.find(e => e.id === pdfBtn.dataset.id);
+      if (registro) gerarPdfOneOnOne({ ...registro, data: registro.data_encontro });
+      return;
+    }
+
     const btn = ev.target.closest('.btn-oneonone-delete');
     if (!btn) return;
     const registro = oneOnOneCache.find(e => e.id === btn.dataset.id);
