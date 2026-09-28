@@ -3221,15 +3221,26 @@
     y += 10;
 
     ONEONONE_TOPICOS.forEach(t => {
-      const texto = dados[t.chave] || '—';
+      const pontos = atividadesToItems(dados[t.chave]);
       doc.setFont(undefined, 'bold');
       doc.text(t.titulo, margem, y);
       y += 6;
       doc.setFont(undefined, 'normal');
-      const linhas = doc.splitTextToSize(texto, largura);
-      if (y + linhas.length * 6 > 280) { doc.addPage(); y = margem; }
-      doc.text(linhas, margem, y);
-      y += linhas.length * 6 + 6;
+
+      if (pontos.length === 0) {
+        if (y + 6 > 280) { doc.addPage(); y = margem; }
+        doc.text('—', margem, y);
+        y += 8;
+      } else {
+        pontos.forEach(ponto => {
+          const linhas = doc.splitTextToSize(ponto, largura - 6);
+          if (y + linhas.length * 6 > 280) { doc.addPage(); y = margem; }
+          doc.text('•', margem, y);
+          doc.text(linhas, margem + 6, y);
+          y += linhas.length * 6 + 2;
+        });
+        y += 4;
+      }
     });
 
     const nomeArquivo = 'one-on-one-' + dados.colaborador.trim().replace(/\s+/g, '-') + '-' + dados.data + '.pdf';
