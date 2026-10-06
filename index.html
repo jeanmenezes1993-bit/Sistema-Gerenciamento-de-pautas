@@ -605,6 +605,49 @@
     width: fit-content;
   }
 
+  .card-adiamentos {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    background: var(--gold-tint, #F5EFDC);
+    user-select: text;
+  }
+
+  .card-adiamentos-titulo {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .card-adiamento-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 0;
+    border-top: 1px dashed var(--border);
+  }
+
+  .card-adiamentos-titulo + .card-adiamento-item { border-top: none; padding-top: 0; }
+
+  .card-adiamento-data {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .card-adiamento-motivo {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
   .card-obs-input {
     font-family: inherit;
     font-size: 13.5px;
@@ -1964,6 +2007,7 @@
       autor: row.autor || '',
       destinatarios: row.destinatarios || [],
       observacao: row.observacao || '',
+      adiamentos: Array.isArray(row.adiamentos) ? row.adiamentos : [],
       createdAt: new Date(row.created_at).getTime(),
       status: row.status,
       finalizadoAt: row.finalizado_at ? new Date(row.finalizado_at).getTime() : null,
@@ -2147,6 +2191,22 @@
 
       const obsHtml = `<textarea class="card-obs-input" data-id="${item.id}" placeholder="Adicionar observação...">${escapeHtml(item.observacao)}</textarea>`;
 
+      // Histórico de adiamentos: bloco fixo, somente leitura (não é o campo editável)
+      const adiamentosHtml = item.adiamentos && item.adiamentos.length
+        ? `<div class="card-adiamentos">
+             <div class="card-adiamentos-titulo">Histórico de adiamentos</div>
+             ${item.adiamentos.map(nota => {
+               const m = nota.match(/^\[Adiado em ([^\]]+)\]\s*([\s\S]*)$/);
+               const data = m ? m[1] : '';
+               const motivo = m ? m[2] : nota;
+               return `<div class="card-adiamento-item">
+                         <span class="card-adiamento-data">${escapeHtml(data)}</span>
+                         <span class="card-adiamento-motivo">${escapeHtml(motivo)}</span>
+                       </div>`;
+             }).join('')}
+           </div>`
+        : '';
+
       const finalizeBtnHtml = item.status !== 'finalizada'
         ? `<button class="btn-finalize" data-id="${item.id}">✅ Finalizar</button>`
         : '';
@@ -2172,6 +2232,7 @@
             ${finalizedHtml}
           </div>
           ${obsHtml}
+          ${adiamentosHtml}
           <div class="card-footer">
             ${finalizeBtnHtml}
             ${snoozeBtnHtml}
@@ -2388,11 +2449,11 @@
     if (!item) { closeSnoozeModal(); return; }
 
     const nota = `[Adiado em ${formatDate(new Date().toISOString())}] ${justificativa}`;
-    const novaObservacao = item.observacao ? `${item.observacao}\n\n${nota}` : nota;
+    const novosAdiamentos = [...(item.adiamentos || []), nota];
 
     const { error } = await supabaseClient
       .from('pautas')
-      .update({ postponed_at: new Date().toISOString(), observacao: novaObservacao })
+      .update({ postponed_at: new Date().toISOString(), adiamentos: novosAdiamentos })
       .eq('id', snoozeTargetId);
 
     if (error) {
