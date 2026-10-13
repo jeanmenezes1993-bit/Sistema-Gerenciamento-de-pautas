@@ -1292,29 +1292,56 @@
     margin-bottom: 8px;
   }
 
-  /* ---- Aviso no WhatsApp ---- */
+  /* ---- Mensagem pronta pra copiar ---- */
   .whatsapp-send-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 16px;
+  }
+
+  .whatsapp-msg-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+  }
+
+  .whatsapp-msg-nome {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  .whatsapp-msg-texto {
+    font-size: 13.5px;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .btn-whatsapp {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    align-self: flex-start;
     background: #25D366;
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius);
-    padding: 11px 14px;
-    font-size: 14px;
+    padding: 9px 14px;
+    font-size: 13px;
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
     transition: background .15s ease;
   }
+
+  .btn-whatsapp.copiado { background: var(--success); }
 
   .btn-whatsapp:hover { background: #1EBE57; }
 
@@ -1727,7 +1754,7 @@
 <div class="modal-overlay" id="whatsapp-overlay">
   <div class="modal-card" id="whatsapp-card">
     <h3>Pauta cadastrada ✅</h3>
-    <p>Avise quem precisa saber pelo WhatsApp:</p>
+    <p>Copie a mensagem e cole na conversa do WhatsApp de cada pessoa:</p>
     <div class="whatsapp-send-list" id="whatsapp-send-list"></div>
     <div class="modal-actions">
       <button type="button" class="btn-secondary" id="whatsapp-close">Fechar</button>
@@ -2252,57 +2279,56 @@
   }
 
   // Números de celular dos destinatários fixos, para o atalho de aviso no WhatsApp.
-  // Não ficam escritos aqui: são buscados do banco (protegido por RLS) quando o app
-  // carrega e guardados só na memória do navegador, nunca no código público do repositório.
-  const PAUTA_TELEFONES = {};
-  const NOMES_COM_TELEFONE = ['Solange Vilarino', 'Felipe Galvão', 'Jean Menezes'];
-
-  async function carregarTelefonesContatos() {
-    await Promise.all(NOMES_COM_TELEFONE.map(async (nome) => {
-      const { data, error } = await supabaseClient.rpc('get_telefone_contato', { nome_busca: nome });
-      if (error) {
-        console.error('Erro ao buscar telefone de ' + nome, error);
-        return;
-      }
-      if (data) PAUTA_TELEFONES[nome] = data;
-    }));
-  }
-
   const whatsappOverlay = document.getElementById('whatsapp-overlay');
-  const whatsappCard = document.getElementById('whatsapp-card');
   const whatsappList = document.getElementById('whatsapp-send-list');
   const whatsappClose = document.getElementById('whatsapp-close');
 
-  function montarMensagemPauta(dados) {
-    return 'Nova pauta: ' + dados.pauta;
+  // Uma mensagem por destinatário, já com o nome da pessoa — sem depender de nenhum
+  // telefone cadastrado. É só copiar e colar na conversa certa do WhatsApp.
+  function montarMensagemChamado(nome, pautaTitulo) {
+    return 'Olá, ' + nome.split(' ')[0] + '! Foi aberto um chamado: ' + pautaTitulo;
   }
 
-  function linkWhatsapp(nome, mensagem) {
-    return 'https://wa.me/' + PAUTA_TELEFONES[nome] + '?text=' + encodeURIComponent(mensagem);
-  }
+  function mostrarMensagensParaCopiar(destinatarios, pautaTitulo) {
+    if (destinatarios.length === 0) return;
 
-  // Vai direto para o WhatsApp Web/app de cada destinatário. Se o navegador bloquear
-  // alguma aba (comum quando há mais de um destinatário), mostra um aviso só com as
-  // que falharam, para abrir manualmente.
-  function irParaWhatsapp(destinatarios, mensagem) {
-    const comTelefone = destinatarios.filter(nome => PAUTA_TELEFONES[nome]);
-    if (comTelefone.length === 0) return;
-
-    const bloqueados = comTelefone.filter(nome => {
-      const janela = window.open(linkWhatsapp(nome, mensagem), '_blank', 'noopener');
-      return !janela;
-    });
-
-    if (bloqueados.length === 0) return;
-
-    whatsappList.innerHTML = bloqueados.map(nome =>
-      '<a class="btn-whatsapp" target="_blank" rel="noopener" href="' + linkWhatsapp(nome, mensagem) + '">' +
-        '📲 Enviar no WhatsApp de ' + escapeHtml(nome.split(' ')[0]) +
-      '</a>'
-    ).join('');
-    whatsappCard.querySelector('p').textContent = 'Seu navegador bloqueou a abertura automática. Abra manualmente:';
+    whatsappList.innerHTML = destinatarios.map((nome, indice) => {
+      const mensagem = montarMensagemChamado(nome, pautaTitulo);
+      return (
+        '<div class="whatsapp-msg-block">' +
+          '<span class="whatsapp-msg-nome">' + escapeHtml(nome) + '</span>' +
+          '<span class="whatsapp-msg-texto">' + escapeHtml(mensagem) + '</span>' +
+          '<button type="button" class="btn-whatsapp" data-indice="' + indice + '">📋 Copiar mensagem</button>' +
+        '</div>'
+      );
+    }).join('');
+    whatsappList.dataset.mensagens = JSON.stringify(destinatarios.map(nome => montarMensagemChamado(nome, pautaTitulo)));
     whatsappOverlay.classList.add('open');
   }
+
+  whatsappList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-whatsapp');
+    if (!btn) return;
+    const mensagens = JSON.parse(whatsappList.dataset.mensagens || '[]');
+    const texto = mensagens[Number(btn.dataset.indice)];
+    if (!texto) return;
+
+    try {
+      await navigator.clipboard.writeText(texto);
+    } catch (err) {
+      console.error('Erro ao copiar mensagem', err);
+      alert('Não foi possível copiar automaticamente. Selecione o texto e copie manualmente.');
+      return;
+    }
+
+    const textoOriginal = btn.textContent;
+    btn.textContent = '✅ Copiado!';
+    btn.classList.add('copiado');
+    setTimeout(() => {
+      btn.textContent = textoOriginal;
+      btn.classList.remove('copiado');
+    }, 1800);
+  });
 
   whatsappClose.addEventListener('click', () => whatsappOverlay.classList.remove('open'));
   whatsappOverlay.addEventListener('click', (e) => {
@@ -2347,7 +2373,7 @@
     form.reset();
     await fetchPautas();
     showScreen('nav-pendentes');
-    irParaWhatsapp(destinatarios, montarMensagemPauta(dadosMensagem));
+    mostrarMensagensParaCopiar(destinatarios, dadosMensagem.pauta);
   });
 
   grid.addEventListener('click', async (e) => {
@@ -3482,7 +3508,6 @@
     fetchColaboradores();
     fetchEntregas();
     fetchOneOnOne();
-    carregarTelefonesContatos();
     setInterval(() => {
       if (currentScreen === 'nav-epi') renderEpi();
       else if (currentScreen === 'nav-one-on-one') renderOneOnOne();
