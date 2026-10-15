@@ -258,6 +258,24 @@
     transform: translateX(16px);
   }
 
+  .app-brand {
+    position: fixed;
+    top: 16px;
+    right: 22px;
+    z-index: 50;
+    font-family: var(--font-serif-corp, 'Source Serif 4', Georgia, serif);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    color: var(--primary);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (max-width: 720px) {
+    .app-brand { font-size: 13px; top: 14px; right: 14px; }
+  }
+
   .menu-toggle {
     display: none;
     position: fixed;
@@ -1519,6 +1537,7 @@
 </div>
 
 <div class="app" id="app-root" style="display:none;">
+  <div class="app-brand" aria-hidden="true">VX CASE</div>
   <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">☰</button>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
