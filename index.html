@@ -1640,7 +1640,6 @@
   <section id="cards-section">
     <h2 class="section-title">
       <span id="section-title-text">Pautas Cadastradas</span>
-      <span class="count-badge" id="count-badge">0</span>
     </h2>
     <div class="cards-grid" id="cards-grid"></div>
   </section>
@@ -2036,7 +2035,6 @@
   const destinatariosGroup = document.getElementById('destinatarios-group');
   const obsInput = document.getElementById('observacao');
   const grid = document.getElementById('cards-grid');
-  const countBadge = document.getElementById('count-badge');
 
   let pautasCache = [];
 
@@ -2170,8 +2168,6 @@
       if (pessoa) return item.destinatarios.includes(pessoa) && item.status !== 'finalizada';
       return false;
     });
-    countBadge.textContent = visible.length;
-
     if (visible.length === 0) {
       let icon = '📋';
       let title = 'Nenhuma pauta cadastrada';
