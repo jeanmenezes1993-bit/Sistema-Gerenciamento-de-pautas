@@ -1734,7 +1734,7 @@
 
   <section id="colaboradores-section" class="colab-module" style="display:none;">
     <div class="colab-header">
-      <h2>Cadastro de Colaboradores</h2>
+      <h2>Cadastro de Colaboradores <span class="count-badge" id="colab-count-badge">0</span></h2>
       <p>Gestão e acompanhamento da equipe do Estoque</p>
     </div>
 
@@ -2512,6 +2512,7 @@
   let colaboradoresCache = [];
 
   const colabGrid = document.getElementById('colab-grid');
+  const colabCountBadge = document.getElementById('colab-count-badge');
   const colabSearch = document.getElementById('colab-search');
   const colabFilterSubsetor = document.getElementById('colab-filter-subsetor');
   const colabFilterCargo = document.getElementById('colab-filter-cargo');
@@ -2652,6 +2653,7 @@
 
   function renderColaboradores() {
     populateColabFilters();
+    colabCountBadge.textContent = colaboradoresCache.length;
 
     const termo = colabSearch.value.trim().toLowerCase();
     const subsetorFiltro = colabFilterSubsetor.value;
